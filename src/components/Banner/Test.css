@@ -1,0 +1,41 @@
+.container {
+  height: 100vh;
+  background-color: white;
+  display: flex;
+  align-items: center;
+}
+
+.zoom{
+  display: none;
+  border: 1px solid white;
+  height: 90vh;
+  width: 76vw;
+  overflow: hidden;
+  background-color: transparent;
+}
+
+.zoom > img {
+  object-fit: contain;
+  height: 90vh;
+  width: 76vw;
+  transform: translate3d(0px, 0px, 0px);
+  /* object-fit: ; */
+}
+.cart_item {
+  object-fit: contain;
+  height: 50vh;
+  margin-right: 10px;
+}
+
+/* .zoom {
+  position: relative;
+  overflow: hidden;
+  width: 100px; 
+  height: 100px; 
+}
+
+.zoom > img {
+  position: absolute;
+  width: auto;
+  height: auto;
+} */
