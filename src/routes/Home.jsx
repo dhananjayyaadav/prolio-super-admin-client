@@ -14,6 +14,7 @@ import BuyingTipsPage from "../components/ProductBuyingTips/BuyingTipsPage";
 import Product from "../components/Product/Product";
 import BannerManagement from "../components/Banner/BannerManagement";
 import Test from "../components/Banner/Test";
+import ForumManagement from "../components/forum/ForumManagement";
 
 function Home() {
   return (
@@ -36,6 +37,7 @@ function Home() {
           {/* Main content with Tailwind */}
           <Routes>
             <Route path="/test" element={<Test />} />
+            <Route path="/forum" element={<ForumManagement />} />
             <Route path="/company" element={<CompanyList />} />
             <Route path="/type" element={<ViewTypes />} />
             <Route path="/add-categories" element={<AddCategories />} />

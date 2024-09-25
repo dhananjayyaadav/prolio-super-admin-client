@@ -28,6 +28,11 @@ function Sidebar() {
       path: "/admin",
     },
     {
+      title: "Forum Management",
+      icon: <Icon icon="mingcute:grid-2-fill" className="bg-transparent" />,
+      path: "/forum",
+    },
+    {
       title: "Company Profiles",
       icon: <CgBox className="bg-transparent" />,
       path: "/company",
