@@ -12,9 +12,9 @@ module.exports = {
       scale: {
         120: "1.2",
       },
-    },
-    fontFamily: {
-      santoshi: ["Santoshi", "sans-serif"],
+      fontFamily: {
+        poppins: ["Poppins", "sans-serif"], // Define Poppins font here
+      },
     },
   },
   plugins: [],

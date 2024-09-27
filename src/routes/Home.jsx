@@ -15,6 +15,7 @@ import Product from "../components/Product/Product";
 import BannerManagement from "../components/Banner/BannerManagement";
 import Test from "../components/Banner/Test";
 import ForumManagement from "../components/forum/ForumManagement";
+import LoginPage from "../pages/LoginPage"; // Import the LoginPage
 
 function Home() {
   return (
@@ -36,6 +37,7 @@ function Home() {
         <div className="flex-1 overflow-auto p-4 mt-5  bg-blue-50">
           {/* Main content with Tailwind */}
           <Routes>
+            <Route path="/" element={<LoginPage />} />{" "}
             <Route path="/test" element={<Test />} />
             <Route path="/forum" element={<ForumManagement />} />
             <Route path="/company" element={<CompanyList />} />
