@@ -26,20 +26,26 @@ function HomePage() {
 
         <div className="w-[80%]    bg-blue-50  ">
           <Routes>
-            <Route path="/forum" element={<forumManagement />}></Route>
-            <Route path="/company" element={<CompanyList />}></Route>
-            <Route path="/type" element={<ViewTypes />}></Route>
-            <Route path="/add-categories" element={<AddCategories />}></Route>
-            <Route path="/categories" element={<CategoriyList />}></Route>
-            <Route path="/add-type" element={<CreateTypes />}></Route>
-            <Route path="/edit-type/:id" element={<EditType />}></Route>
+            <Route path="/admin/forum" element={<forumManagement />}></Route>
+            <Route path="/admin/company" element={<CompanyList />}></Route>
+            <Route path="/admin/type" element={<ViewTypes />}></Route>
             <Route
-              path="/edit-categorirs/:id"
+              path="/admin/add-categories"
+              element={<AddCategories />}
+            ></Route>
+            <Route path="/admin/categories" element={<CategoriyList />}></Route>
+            <Route path="/admin/add-type" element={<CreateTypes />}></Route>
+            <Route path="/admin/edit-type/:id" element={<EditType />}></Route>
+            <Route
+              path="/admin/edit-categorirs/:id"
               element={<EditCategory />}
             ></Route>
-            <Route path="/product-tips" element={<BuyingTipsPage />}></Route>
-            <Route path="/product" element={<Product />}></Route>
-            <Route path="/banner" element={<BannerManagement />}></Route>
+            <Route
+              path="/admin/product-tips"
+              element={<BuyingTipsPage />}
+            ></Route>
+            <Route path="/admin/product" element={<Product />}></Route>
+            <Route path="/admin/banner" element={<BannerManagement />}></Route>
           </Routes>
         </div>
       </div>

@@ -18,7 +18,6 @@ function LoginPage() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [googleLoading, setgoogleLoading] = useState(false);
 
   const {
     register,
@@ -35,21 +34,25 @@ function LoginPage() {
     try {
       setIsSubmitting(true);
       if (formData) {
-        const response = await axios.post(`${apiURL}/auth/login`, formData);
+        const response = await axios.post(
+          `${apiURL}/auth/superAdminLogin`,
+          formData
+        );
         const { token, role, id, userDetails, departments } = response.data;
-
+        console.log("response", response.data);
         const data = {
           token,
           role,
           id,
         };
+        localStorage.setItem("token", token);
         setIsSubmitting(false);
         dispatch(setToken(data));
         dispatch(
           setUserDetails({ ...userDetails, departments: departments || [] })
         );
         if (response.data.role === "user") {
-          navigate("/");
+          navigate("/admin");
         } else {
           navigate("/admin");
         }
@@ -71,96 +74,6 @@ function LoginPage() {
       console.error("Error saving user details:", error);
     }
   }
-
-  const saveUserDetailsToBackend = async (user) => {
-    try {
-      const response = await axios.post(
-        `${process.env.REACT_APP_API_URL}/auth/google-login`,
-        user
-      );
-      if (response.status === 200) {
-        toast.success("Registered successfully");
-        const { token, role, id, userDetails, departments } = response.data;
-
-        const data = {
-          token,
-          role,
-          id,
-        };
-        // console.log(response.data);
-        dispatch(setToken(data));
-        dispatch(
-          setUserDetails({ ...userDetails, departments: departments || [] })
-        );
-
-        // setTimeout(() => {
-        if (role === "user") {
-          navigate("/");
-        } else {
-          navigate("/admin");
-        }
-        // }, 2000);
-      } else if (response.status === 400) {
-        toast.error("Error occured");
-      }
-    } catch (error) {
-      toast.error(
-        `Registration failed: ${error.response?.data?.message || error.message}`
-      );
-    }
-  };
-
-  // useEffect(() => {
-  //   window.google.accounts.id.initialize({
-  //     client_id: process.env.Google_Client_ID,
-  //     callback: handleCallbackResponse,
-  //   });
-  //   window.google.accounts.id.renderButton(document.getElementById("sign"), {
-  //     theme: "outline",
-  //     size: "large",
-  //   });
-  // }, []);
-  useEffect(() => {
-    // Function to initialize Google Sign-In
-    const initializeGoogleSignIn = () => {
-      try {
-        window.google.accounts.id.initialize({
-          client_id: process.env.Google_Client_ID,
-          callback: handleCallbackResponse,
-        });
-        window.google.accounts.id.renderButton(
-          document.getElementById("sign"),
-          {
-            theme: "outline",
-            size: "large",
-          }
-        );
-      } catch (error) {
-        console.error("Google API failed to load:", error);
-        // Handle the error gracefully, maybe show a message to the user
-      }
-    };
-
-    // Check if Google API is available
-    if (window.google && window.google.accounts && window.google.accounts.id) {
-      initializeGoogleSignIn();
-    } else {
-      // If Google API is not available, you can retry after some time or show an error message
-      toast.error(
-        "Google API is not available. Please check your internet connection."
-      );
-      // Optionally, you can set a timeout to retry initialization
-      setTimeout(() => {
-        if (
-          window.google &&
-          window.google.accounts &&
-          window.google.accounts.id
-        ) {
-          initializeGoogleSignIn();
-        }
-      }, 5000); // Retry after 5 seconds
-    }
-  }, []);
 
   return (
     <div className="flex flex-col lg:flex-row w-full h-full bg-blue-50">
@@ -256,31 +169,7 @@ function LoginPage() {
             <span className="text-center text-gray-400">Or</span>
             <hr className="border-gray-400 flex-grow" />
           </div>
-
-          {/* {googleLoading ? (
-            <SmallLoader />
-          ) : ( */}
-          <div
-            id="sign"
-            className="flex items-center justify-center w-full  rounded text-sm "
-          >
-            Sign In Using Google
-            <span className="ml-2">
-              {" "}
-              <FcGoogle />
-            </span>
-          </div>
           {/* )}  */}
-
-          <p className="text-center text-gray-500">
-            Don't have an account yet?
-            <Link
-              className="underline text-blue-600 hover:text-blue-800 font-semibold px-2"
-              to="/signup"
-            >
-              Sign Up
-            </Link>
-          </p>
         </form>
       </div>
       <ToastContainer />
