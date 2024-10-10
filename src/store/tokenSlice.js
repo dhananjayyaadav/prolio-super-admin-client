@@ -17,17 +17,17 @@ const tokenSlice = createSlice({
       state.userId = action.payload.id;
       state.user = true;
     },
-    clearToken: (state, action) => {
-      state.token = null;
-      state.role = null;
-      state.userId = null;
+    clearToken: (state) => {
+      state.token = "";
+      state.role = "";
+      state.userId = "";
       state.user = false;
     },
-    setRole: (state,action) => {
-      state.role = action.payload.role
-    }
+    setRole: (state, action) => {
+      state.role = action.payload.role;
+    },
   },
 });
 
-export const { setToken, clearToken ,setRole} = tokenSlice.actions;
+export const { setToken, clearToken, setRole } = tokenSlice.actions;
 export default tokenSlice.reducer;

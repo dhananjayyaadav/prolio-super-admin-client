@@ -27,17 +27,17 @@ const ForumManagement = () => {
 
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [isMyForumsSidebarCollapsed, setIsMyForumsSidebarCollapsed] =
-    useState(false);
+  useState(false);
   const [activeView, setActiveView] = useState("home");
 
   const openAddModal = () => setIsAddModalOpen(true);
   const closeAddModal = () => setIsAddModalOpen(false);
-  const openManageProductModal = () => setIsManageProductModalOpen(true); // Open ManageProduct modal
-  const closeManageProductModal = () => setIsManageProductModalOpen(false); // Close ManageProduct modal
+  const openManageProductModal = () => setIsManageProductModalOpen(true);
+  const closeManageProductModal = () => setIsManageProductModalOpen(false);
 
   const toggleSidebar = () => setIsSidebarCollapsed(!isSidebarCollapsed);
   const toggleMyForumsSidebar = () =>
-    setIsMyForumsSidebarCollapsed(!isMyForumsSidebarCollapsed);
+  setIsMyForumsSidebarCollapsed(!isMyForumsSidebarCollapsed);
 
   const handleNavClick = (view) => {
     setActiveView(view);

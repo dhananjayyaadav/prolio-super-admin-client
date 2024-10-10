@@ -26,7 +26,7 @@ function ViewTypes() {
 
   // Function to handle edit button click
   const handleEditClick = (id) => {
-    navigate(`/edit-type/${id}`);
+    navigate(`/admin/edit-type/${id}`);
   };
 
   return (
@@ -36,7 +36,7 @@ function ViewTypes() {
         className="type-button"
         style={{ marginBottom: "10px", marginTop: "10px" }}
         onClick={() => {
-          navigate(`/add-type`);
+          navigate(`/admin/add-type`);
         }}
       >
         Add New Entry
