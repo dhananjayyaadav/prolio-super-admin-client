@@ -40,12 +40,12 @@ function Navbar() {
     {
       title: "Company Profiles",
       icon: <CgBox className="bg-transparent" />,
-      path: "/company",
+      path: "/admin/company",
     },
     {
       title: "Categories",
       icon: <TbCategoryPlus className="bg-transparent" />,
-      path: "/categories",
+      path: "/admin/categories",
     },
     {
       title: "Products",

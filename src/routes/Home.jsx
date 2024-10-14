@@ -21,7 +21,7 @@ import LoginPage from "../pages/LoginPage"; // Import the LoginPage
 function Home() {
   const token = useSelector((state) => state.token.token);
   const location = useLocation();
-
+  
   return (
     <div className="flex flex-col h-screen">
       {/* Show the Navbar only if the user is logged in and not on the login page */}

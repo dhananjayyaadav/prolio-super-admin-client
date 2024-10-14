@@ -12,7 +12,6 @@ function CompanyList() {
   ];
   const [selectedButton, setSelectedButton] = useState(DropDownList[0]);
 
-  
   const [list, setList] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -60,18 +59,19 @@ function CompanyList() {
       accessorKey: "state",
     },
     {
-      header: "Appled Date",
+      header: "Applied Date",
       accessorKey: "createdAt",
-    },
-    {
-      header: "Verified Date",
-      accessorKey: "updatedAt",
     },
     {
       header: "Status",
       accessorKey: "status",
     },
+    {
+      header: "Action",
+      accessorKey: "action", // Ensure this matches the action column in PendingTable
+    },
   ];
+
   const apiURL = process.env.REACT_APP_API_URL;
 
   useEffect(() => {
@@ -122,11 +122,11 @@ function CompanyList() {
         case "Pending entities":
           return (
             <PendingTable
-            data={data.map((item) => ({
-              ...item,
-              createdAt: new Date(item.createdAt).toLocaleDateString(),
-              updatedAt: new Date(item.updatedAt).toLocaleDateString(),
-            }))}
+              data={data.map((item) => ({
+                ...item,
+                createdAt: new Date(item.createdAt).toLocaleDateString(),
+                updatedAt: new Date(item.updatedAt).toLocaleDateString(),
+              }))}
               columns={modifiedColumns}
               value={selectedButton}
             />

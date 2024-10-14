@@ -32,7 +32,7 @@ export default function VerifyTable({ data, columns, value, fetchData }) {
   });
 
   const handleRowClick = (rowData) => {
-    navigate(`/edit-categories/${rowData}`);
+    navigate(`/admin/edit-categories/${rowData}`);
   };
 
   const [isInputOpen, setIsInputOpen] = useState(false);

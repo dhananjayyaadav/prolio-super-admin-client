@@ -129,7 +129,7 @@ function AddCategories() {
 
       toast.success(response.data.message);
       setTimeout(() => {
-        navigate("/categories");
+        navigate("/admin/categories");
       }, 3000);
     } catch (error) {
       toast.error(error.response.data.message);
@@ -392,14 +392,13 @@ function AddCategories() {
                               {card.description}
                             </label>
                           )}
-                          {card.type === "text" &&
-                             (
-                              <input
-                                className="w-full h-10 mt-1 p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
-                                type="text"
-                                placeholder={card.description}
-                              />
-                            )}
+                          {card.type === "text" && (
+                            <input
+                              className="w-full h-10 mt-1 p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
+                              type="text"
+                              placeholder={card.description}
+                            />
+                          )}
                           {card.type === "file" && (
                             <div className=" border-gray-500 rounded-2xl border-2 border-dashed  w-20 h-20  items-center  bg-white">
                               <h6 className="bg-white text-xs m-4 pt-3 text-center font-semibold">
@@ -563,9 +562,6 @@ function AddCategories() {
                             name={`attribute_${index}`}
                             placeholder={question.description}
                             value=""
-                            // onChange={(event) =>
-                            //   handleAttributeChange(index, event)
-                            // }
                             className="w-full  h-9 text-sm px-3  focus:outline-none border border-gray-300 rounded-md"
                           />
                         </div>
