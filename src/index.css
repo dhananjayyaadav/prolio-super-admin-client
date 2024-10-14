@@ -1,3 +1,10 @@
+/* globals.css */
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap");
+
+body {
+  @apply font-poppins; /* This applies the Poppins font to the body */
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
