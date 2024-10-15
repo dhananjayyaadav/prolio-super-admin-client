@@ -44,7 +44,7 @@ function ProductList({ list, header, onSubmit }) {
       accessorKey: "productId",
     },
     {
-      header: "Appled Date",
+      header: "Applied Date",
       accessorKey: "createdAt",
     },
     {
