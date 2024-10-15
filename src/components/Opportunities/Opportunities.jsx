@@ -54,7 +54,7 @@ function Opportunities() {
       accessorKey: "productId",
     },
     {
-      header: "Appled Date",
+      header: "Applied Date",
       accessorKey: "appliedDate",
     },
     {
