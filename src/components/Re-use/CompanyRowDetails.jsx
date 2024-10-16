@@ -123,9 +123,9 @@ function CompanyRowDetails({ data, onClose }) {
       content: (
         <div>
           <ul className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-            {data.documents.map((document, index) => (
+            {data.documents?.map((document, index) => (
               <li key={index} className="flex flex-col items-center">
-                {document.url.endsWith(".pdf") ? (
+                {document?.url?.endsWith(".pdf") ? (
                   <div className="flex flex-col items-center">
                     <a
                       href={document.url}
