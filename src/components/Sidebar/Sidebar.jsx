@@ -43,7 +43,7 @@ function Sidebar() {
       path: "/admin/company",
     },
     {
-      title: "Question Bank",
+      title: "Manage Type",
       icon: <CgBox className="bg-transparent" />,
       path: "/admin/type",
     },
@@ -95,6 +95,7 @@ function Sidebar() {
       onClick: () => handleLogout(), // Call handleLogout function
     },
   ]);
+
   const handleLogout = () => {
     Swal.fire({
       title: "Are you sure?",

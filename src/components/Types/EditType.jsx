@@ -352,7 +352,7 @@ const EditType = () => {
         <div>
           <button
             onClick={() => {
-              navigate("/type");
+              navigate("/admin/type");
             }}
           >
             Back

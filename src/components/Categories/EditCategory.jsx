@@ -120,7 +120,7 @@ function EditCategory() {
 
       toast.success(response.data.message);
       setTimeout(() => {
-        navigate("/categories");
+        navigate("/admin/categories");
       }, 3000);
     } catch (error) {
       toast.error(error.response.data.message);

@@ -277,7 +277,6 @@ const CreateTypes = () => {
         );
       });
     });
-
     // Check if any option for questions of type dropdown, radio, or select is empty
     const hasEmptyOption = steps.some((step) => {
       return step.questions.some((question) => {
@@ -330,7 +329,7 @@ const CreateTypes = () => {
     <div className="h-screen">
       <button
         onClick={() => {
-          navigate("/type");
+          navigate("/admin/type");
         }}
       >
         Back

@@ -63,14 +63,15 @@ function CompanyList() {
       accessorKey: "createdAt",
     },
     {
-      header: "Verified Date",
-      accessorKey: "updatedAt",
-    },
-    {
       header: "Status",
       accessorKey: "status",
     },
+    {
+      header: "Action",
+      accessorKey: "action", // Ensure this matches the action column in PendingTable
+    },
   ];
+
   const apiURL = process.env.REACT_APP_API_URL;
 
   useEffect(() => {

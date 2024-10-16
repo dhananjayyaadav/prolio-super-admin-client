@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 import {
   flexRender,
   getCoreRowModel,
@@ -7,12 +7,15 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-// import editIcon from "../../assets/edit-3.png";
 import { FiSearch, FiX } from "react-icons/fi";
 import RowDetails from "./RowDetails";
 
 export default function VerifyTable({ data, columns, value }) {
   const [filtering, setFiltering] = useState("");
+  const [selectedRowData, setSelectedRowData] = useState(null);
+  const [showRowDetails, setShowRowDetails] = useState(false);
+  const [showTableDetails, setTableRowDetails] = useState(true);
+  const [isInputOpen, setIsInputOpen] = useState(false);
 
   const table = useReactTable({
     data,
@@ -27,16 +30,10 @@ export default function VerifyTable({ data, columns, value }) {
     onGlobalFilterChange: setFiltering,
   });
 
-  const [selectedRowData, setSelectedRowData] = useState(null);
-  const [showRowDetails, setShowRowDetails] = useState(false);
-  const [showTableDetails, setTableRowDetails] = useState(true);
-
   const handleRowClick = (rowData) => {
     setSelectedRowData(rowData);
     setShowRowDetails(true);
     setTableRowDetails(false);
-
-    // window.open(rowData.link, "_blank");
   };
 
   const handleClose = () => {
@@ -51,15 +48,14 @@ export default function VerifyTable({ data, columns, value }) {
           <h1 className="text-xl text-blue-900 font-santoshi font-semibold">
             {value}
           </h1>
-          {/* Conditionally render search and close icons based on input visibility */}
           {!isInputOpen ? (
             <FiSearch
-              className="mx-5 text-2xl   cursor-pointer "
+              className="mx-5 text-2xl cursor-pointer"
               onClick={() => setIsInputOpen(true)}
             />
           ) : (
             <FiX
-              className="mx-5 text-2xl  cursor-pointer"
+              className="mx-5 text-2xl cursor-pointer"
               onClick={() => {
                 setIsInputOpen(false);
                 setFiltering(""); // Clear input value when closing
@@ -67,7 +63,7 @@ export default function VerifyTable({ data, columns, value }) {
             />
           )}
         </div>
-        {/* Conditionally render input field based on input visibility */}
+
         {isInputOpen && (
           <div className="flex items-center px-5 mt-3">
             <input
@@ -80,8 +76,8 @@ export default function VerifyTable({ data, columns, value }) {
           </div>
         )}
 
-        <div className="pt-4  px-8 bg-transparent">
-          <hr className=" border-gray-500 bg-transparent" />
+        <div className="pt-4 px-8 bg-transparent">
+          <hr className="border-gray-500 bg-transparent" />
           <div className="w-full overflow-x-auto mt-3 bg-blue-50">
             <table className="w-full bg-blue-50 mt-3">
               <thead>
@@ -90,11 +86,10 @@ export default function VerifyTable({ data, columns, value }) {
                     {headerGroup.headers.map((header) => (
                       <th
                         key={header.id}
-                        className="px-4 py-2 font-santoshi text-left "
-                        //   onClick={header.column.getToggleSortingHandler()}
+                        className="px-4 py-2 font-santoshi text-left"
                       >
                         {header.isPlaceholder ? null : (
-                          <div className="flex font-santoshi items-center ">
+                          <div className="flex font-santoshi items-center">
                             {flexRender(
                               header.column.columnDef.header,
                               header.getContext()
@@ -112,7 +107,6 @@ export default function VerifyTable({ data, columns, value }) {
                   <tr
                     key={row.id}
                     className="border-b font-santoshi hover:bg-white"
-                    onClick={() => handleRowClick(row.original)}
                   >
                     {row.getVisibleCells().map((cell) => (
                       <td
@@ -128,6 +122,14 @@ export default function VerifyTable({ data, columns, value }) {
                           cell.column.columnDef.cell,
                           cell.getContext()
                         )}
+                        {cell.column.id === "action" && (
+                          <button
+                            onClick={(e) => handleRowClick(row.original, e)}
+                            className="text-blue-700 hover:underline"
+                          >
+                            Action
+                          </button>
+                        )}
                       </td>
                     ))}
                   </tr>
@@ -140,17 +142,14 @@ export default function VerifyTable({ data, columns, value }) {
     );
   };
 
-  const [isInputOpen, setIsInputOpen] = useState(false);
   return (
-    <>
-      <div className="lg:w-[1070px] h-auto w-full  pb-5  rounded-md bg-white  mt-5">
-        <div className=" bg-transparent   pt-5">
-          {showTableDetails && tablelist()}
-          {showRowDetails && (
-            <RowDetails data={selectedRowData} onClose={handleClose} />
-          )}
-        </div>
+    <div className="lg:w-[1070px] h-auto w-full pb-5 rounded-md bg-white mt-5">
+      <div className="bg-transparent pt-5">
+        {showTableDetails && tablelist()}
+        {showRowDetails && (
+          <RowDetails data={selectedRowData} onClose={handleClose} />
+        )}
       </div>
-    </>
+    </div>
   );
 }
