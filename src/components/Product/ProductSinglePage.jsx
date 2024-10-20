@@ -15,6 +15,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useSelector } from "react-redux";
 import ProductDetails1 from "../Re-use/ProductDetail1";
+import Swal from "sweetalert2";
 
 function ProductSinglePage({ id, onClose, headers }) {
   const token = useSelector((state) => state.token.token);

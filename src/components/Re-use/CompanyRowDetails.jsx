@@ -273,7 +273,7 @@ function CompanyRowDetails({ data, onClose }) {
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
-                      d="M19.5 8.25l-7.5 7.5-7.5-7.5"
+                      d="M19.5 15.75l-7.5-7.5-7.5 7.5"
                     />
                   </svg>
                 </span>

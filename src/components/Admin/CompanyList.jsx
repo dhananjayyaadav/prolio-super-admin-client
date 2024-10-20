@@ -13,6 +13,7 @@ function CompanyList() {
   const [selectedButton, setSelectedButton] = useState(DropDownList[0]);
 
   const [list, setList] = useState([]);
+  const [statusCounts, setStatusCounts] = useState({});
   const [loading, setLoading] = useState(true);
 
   const data = useMemo(() => {
@@ -78,15 +79,18 @@ function CompanyList() {
     const fetchData = async () => {
       try {
         const response = await axios.get(`${apiURL}/admin/get-all-company`);
-
-        console.log(response.data), "data...........";
-        setList(response.data);
+        console.log(response.data, "data...........");
+        setList(response.data.companies);
+        setStatusCounts(response.data.statusCounts);
         setLoading(false);
-      } catch (error) {}
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        setLoading(false);
+      }
     };
 
     fetchData();
-  }, []);
+  }, [apiURL]);
 
   let modifiedColumns = [...columns];
   if (selectedButton === "Pending entities") {
@@ -158,28 +162,29 @@ function CompanyList() {
   return (
     <>
       <div className="w-full h-screen bg-blue-50 px-4">
-        <h1 className="text-2xl font-santoshi   text-blue-900 font-bold">
+        <h1 className="text-2xl font-santoshi text-blue-900 font-bold">
           Company profiles
         </h1>
         <div className="pt-1 md:w-[800px] bg-blue-50">
           <hr className="border border-gray-400" />
         </div>
 
-        <div className=" flex flex-col  b  pt-5">
+        <div className="flex flex-col pt-5">
           <div className="w-full">
             {DropDownList.map((value, key) => {
+              const count = statusCounts[value.split(' ')[0].toLowerCase()] || 0;
               return (
-                <div key={key} className=" inline-block focus:outline-none ">
+                <div key={key} className="inline-block focus:outline-none">
                   <button
                     type="button"
-                    className={`py-2 font-bold font-santoshi  px-6 ${
+                    className={`py-2 font-bold font-santoshi px-6 ${
                       selectedButton === value
-                        ? "text-white  bg-blue-900"
-                        : " border-blue-900 border-r-2 bg-white text-blue-900"
+                        ? "text-white bg-blue-900"
+                        : "border-blue-900 border-r-2 bg-white text-blue-900"
                     }`}
                     onClick={() => setSelectedButton(value)}
                   >
-                    {value}
+                    {value} ({count})
                   </button>
                 </div>
               );
