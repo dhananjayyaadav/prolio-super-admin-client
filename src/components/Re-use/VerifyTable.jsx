@@ -8,7 +8,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import { FiSearch, FiX } from "react-icons/fi";
-import RowDetails from "./RowDetails";
+import RowDetails from "./RowDetails"; // Assuming you have a RowDetails component
 
 export default function VerifyTable({ data, columns, value }) {
   const [filtering, setFiltering] = useState("");
@@ -108,30 +108,54 @@ export default function VerifyTable({ data, columns, value }) {
                     key={row.id}
                     className="border-b font-santoshi hover:bg-white"
                   >
-                    {row.getVisibleCells().map((cell) => (
-                      <td
-                        key={cell.id}
-                        className={`px-4 py-2 bg-transparent ${
-                          cell.column.id === "status" &&
-                          cell.getValue() === "verified"
-                            ? "text-green-600 font-semibold"
-                            : ""
-                        }`}
-                      >
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )}
-                        {cell.column.id === "action" && (
-                          <button
-                            onClick={(e) => handleRowClick(row.original, e)}
-                            className="text-blue-700 hover:underline"
-                          >
-                            Action
-                          </button>
-                        )}
-                      </td>
-                    ))}
+                    {row.getVisibleCells().map((cell) => {
+                      const cellValue = cell.getValue();
+                      const fileType = cellValue
+                        ?.split(".")
+                        .pop()
+                        ?.toLowerCase();
+
+                      return (
+                        <td
+                          key={cell.id}
+                          className={`px-4 py-2 bg-transparent ${
+                            cell.column.id === "status" &&
+                            cell.getValue() === "verified"
+                              ? "text-green-600 font-semibold"
+                              : ""
+                          }`}
+                        >
+                          {fileType === "jpg" || fileType === "png" ? (
+                            <img
+                              src={cellValue}
+                              alt="Preview"
+                              className="w-20 h-20 object-cover"
+                            />
+                          ) : fileType === "pdf" ? (
+                            <embed
+                              src={cellValue}
+                              type="application/pdf"
+                              width="100%"
+                              height="200px"
+                            />
+                          ) : (
+                            flexRender(
+                              cell.column.columnDef.cell,
+                              cell.getContext()
+                            )
+                          )}
+
+                          {cell.column.id === "action" && (
+                            <button
+                              onClick={() => handleRowClick(row.original)}
+                              className="text-blue-700 hover:underline"
+                            >
+                              Action
+                            </button>
+                          )}
+                        </td>
+                      );
+                    })}
                   </tr>
                 ))}
               </tbody>

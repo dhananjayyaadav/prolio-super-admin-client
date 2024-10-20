@@ -71,7 +71,7 @@ function CompanyRowDetails({ data, onClose }) {
             <span className="font-semibold">{data.state}</span>
           </div>
           <div className="flex justify-between items-center">
-            <p className="font-santoshi m-0">Registration Number</p>
+            <p className="font-santoshi m-0">GST Number</p>
             <span className="font-semibold">{data.registrationNumber}</span>
           </div>
           <div className="flex justify-between items-center">
@@ -110,6 +110,10 @@ function CompanyRowDetails({ data, onClose }) {
           <div className="flex justify-between items-center">
             <p className="font-santoshi m-0">City</p>
             <span className="font-semibold">{data.city}</span>
+          </div>
+          <div className="flex justify-between items-center">
+            <p className="font-santoshi m-0">Zip Code</p>
+            <span className="font-semibold">{data.zipCode}</span>
           </div>
           <div className="flex justify-between items-center">
             <p className="font-santoshi m-0">State</p>
@@ -329,6 +333,31 @@ export default CompanyRowDetails;
 
 const RejectedModal = ({ data, onClose }) => {
   const navigate = useNavigate();
+  const companyId = data?._id;
+  const [text, setText] = useState("");
+  const apiURL = process.env.REACT_APP_API_URL;
+
+  const handleRejectedConfirm = async (e) => {
+    e.preventDefault();
+    if (!text) return;
+    try {
+      const response = await axios.put(
+        `${apiURL}/admin/rejected-company/${companyId}`,
+        { text: text }
+      );
+      if (response.status === 200) {
+        toast.success(response.data?.message);
+        setTimeout(() => {
+          onClose(); 
+          navigate("/admin/company"); 
+        }, 1000);
+      } else {
+        toast.error(response.data?.message);
+      }
+    } catch (error) {
+      console.error("Error updating company:", error.message);
+    }
+  };
 
   const handleClose = (event) => {
     if (event.target.id === "container") {
@@ -336,74 +365,51 @@ const RejectedModal = ({ data, onClose }) => {
     }
   };
 
-  const companyId = data?._id;
-
-  const [text, setText] = useState("");
-  const apiURL = process.env.REACT_APP_API_URL;
-
-  const handleRejectedConfirm = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await axios.put(
-        `${apiURL}/admin/rejected-company/${companyId}`,
-        {
-          text: text,
-        }
-      );
-
-      if (response.status === 200) {
-        toast.success(response.data.message);
-        setTimeout(() => {
-          toast.success(response.data.message);
-          navigate("/");
-        }, 1000);
-      } else {
-        toast.error(response.data.message);
-      }
-    } catch (error) {
-      console.error("Error updating company:", error.message);
-    }
-  };
   const handleTextChange = (e) => {
     setText(e.target.value);
   };
+
   return (
     <div
       id="container"
-      className="fixed top-0 left-0 w-full h-full  flex items-center justify-center bg-gray-800 bg-opacity-50"
+      className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-800 bg-opacity-50"
       onClick={handleClose}
     >
       <div className="bg-blue-100 w-[700px] p-8 rounded-md">
-        <div className="flex gap-5 ">
-          <img src={deleteIcon} className="h-10" alt="" />
-          <h2 className="text-2xl font-bold py-2 font-santoshi ">
-            {data?.companyName}
+        <div className="flex gap-5">
+          <img src={deleteIcon} className="h-10" alt="delete icon" />
+          <h2 className="text-2xl font-bold py-2 font-santoshi">
+            {data?.companyName || "Company Name"}
           </h2>
         </div>
         <div className="">
           <p className="font-santoshi">
-            Are you sure you want to reject this why?
+            Are you sure you want to reject this company? If so, please provide
+            a reason:
           </p>
           <textarea
             className="w-full mt-3 rounded-xl font-santoshi text-gray-400 p-4 focus:outline-none"
             name="text"
             value={text}
-            placeholder="For what reason is this company being rejecting?"
+            placeholder="For what reason is this company being rejected?"
             cols="30"
             rows="10"
             onChange={handleTextChange}
           ></textarea>
         </div>
-        <div className="flex justify-end gap-5 mt-2 ">
+        <div className="flex justify-end gap-5 mt-2">
           <button
             onClick={onClose}
-            className="bg-transparent hover:bg-blue-50 border border-gray-500 text-gray-800 px-7 py-2  rounded-md"
+            className="bg-transparent hover:bg-blue-50 border border-gray-500 text-gray-800 px-7 py-2 rounded-md"
           >
             Cancel
           </button>
           <button
-            className="bg-blue-900 hover:bg-blue-600 text-white px-7  py-2 rounded-md"
+            className={`bg-blue-900 hover:bg-blue-600 text-white px-7 py-2 rounded-md ${
+              !text ? "opacity-50 cursor-not-allowed" : ""
+            }`}
             onClick={handleRejectedConfirm}
+            disabled={!text}
           >
             Confirm
           </button>
@@ -415,8 +421,7 @@ const RejectedModal = ({ data, onClose }) => {
 
 const VerifyModal = ({ data, onClose }) => {
   const apiURL = process.env.REACT_APP_API_URL;
-
-  const navigate = useNavigate();
+  const navigate = useNavigate(); // Ensure you are using the hook correctly
 
   const handleClose = (event) => {
     if (event.target.id === "container") {
@@ -434,10 +439,13 @@ const VerifyModal = ({ data, onClose }) => {
         `${apiURL}/admin/verified-company/${companyId}`
       );
       if (response.status === 200) {
-        toast.success(response.data.message);
-        navigate("/");
+        toast.success(response.data?.message);
+        setTimeout(() => {
+          onClose();
+          navigate("/admin/company");
+        }, 2000);
       } else {
-        toast.error(response.data.message);
+        toast.error(response.data?.message);
       }
     } catch (error) {
       console.error("Error updating company:", error.message);

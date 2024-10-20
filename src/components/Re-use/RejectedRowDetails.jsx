@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Icon } from "@iconify-icon/react";
+import { X } from "lucide-react";
 
 function RejectedRowDetails({ data, onClose }) {
   const handleOnClose = () => {
@@ -7,11 +8,19 @@ function RejectedRowDetails({ data, onClose }) {
   };
 
   const [activeIndex, setActiveIndex] = useState(-1);
+  const [showVerifyModal, setShowVerifyModal] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
 
   const toggleAccordion = (index) => {
     setActiveIndex(activeIndex === index ? -1 : index);
   };
+  const openFullscreen = (url) => {
+    setSelectedImage(url);
+  };
 
+  const closeFullscreen = () => {
+    setSelectedImage(null);
+  };
   const accordionData = [
     {
       title: "Company Information",
@@ -30,7 +39,7 @@ function RejectedRowDetails({ data, onClose }) {
             <span className="font-semibold">{data.state}</span>
           </div>
           <div className="flex justify-between items-center">
-            <p className="font-santoshi m-0">Registration Number</p>
+            <p className="font-santoshi m-0">GST Number</p>
             <span className="font-semibold">{data.registrationNumber}</span>
           </div>
           <div className="flex justify-between items-center">
@@ -71,6 +80,10 @@ function RejectedRowDetails({ data, onClose }) {
             <span className="font-semibold">{data.city}</span>
           </div>
           <div className="flex justify-between items-center">
+            <p className="font-santoshi m-0">Zip Code</p>
+            <span className="font-semibold">{data.zipCode}</span>
+          </div>
+          <div className="flex justify-between items-center">
             <p className="font-santoshi m-0">State</p>
             <span className="font-semibold">{data.state}</span>
           </div>
@@ -81,11 +94,78 @@ function RejectedRowDetails({ data, onClose }) {
       title: "Documents",
       content: (
         <div>
-          <ul>
-            {data.documents.map((document, index) => (
-              <li key={index}>{document}</li>
+          <ul className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+            {data.documents?.map((document, index) => (
+              <li key={index} className="flex flex-col items-center">
+                {document?.url?.endsWith(".pdf") ? (
+                  <div className="flex flex-col items-center">
+                    <a
+                      href={document.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-blue-600 hover:underline flex flex-col items-center"
+                    >
+                      <div className="w-28 h-24 bg-red-100 flex items-center justify-center rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
+                        <span className="text-3xl font-bold text-red-500">
+                          PDF
+                        </span>
+                      </div>
+                      {/* <p className="mt-2 text-sm text-center truncate w-28">
+                        {document.fileKey.split("/").pop()}
+                      </p> */}
+                    </a>
+                    <a
+                      href={document.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mt-1 text-blue-500 hover:underline text-sm"
+                    >
+                      View File
+                    </a>
+                  </div>
+                ) : (
+                  <div
+                    className="flex flex-col items-center cursor-pointer"
+                    onClick={() => openFullscreen(document.url)}
+                  >
+                    <img
+                      src={document.url}
+                      alt={document.fileKey}
+                      className="w-28 h-24 object-cover rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300"
+                    />
+                    {/* <p className="mt-2 text-sm text-center truncate w-28">
+                      {document.fileKey.split("/").pop()}
+                    </p> */}
+                    <a
+                      href={document.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mt-1 text-blue-500 hover:underline text-sm"
+                    >
+                      View File
+                    </a>
+                  </div>
+                )}
+              </li>
             ))}
           </ul>
+          {selectedImage && (
+            <div className="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
+              <div className="relative max-w-4xl max-h-full">
+                <img
+                  src={selectedImage}
+                  alt="Full screen"
+                  className="max-w-full max-h-[90vh] object-contain"
+                />
+                <button
+                  onClick={closeFullscreen}
+                  className="absolute top-4 right-4 text-white hover:text-gray-300"
+                >
+                  <X size={24} />
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       ),
     },
