@@ -30,6 +30,8 @@ function CompanyRowDetails({ data, onClose }) {
       toast.success("Please verify all steps.");
     }
   };
+
+
   const handleClose = () => {
     setShowRejectModal(false);
   };
