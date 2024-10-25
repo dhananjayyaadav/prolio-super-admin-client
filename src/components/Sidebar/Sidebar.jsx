@@ -8,7 +8,11 @@ import { CiSettings } from "react-icons/ci";
 import { FaPeopleGroup } from "react-icons/fa6";
 import { IoCubeOutline } from "react-icons/io5";
 import { GrAnalytics } from "react-icons/gr";
-import { FaRegLightbulb, FaRegQuestionCircle } from "react-icons/fa";
+import {
+  FaRegLightbulb,
+  FaRegQuestionCircle,
+  FaRegFileAlt,
+} from "react-icons/fa";
 import sidBarImage from "../../assets/sidebar.png";
 import { CgBox } from "react-icons/cg";
 import { LuKey } from "react-icons/lu";
@@ -30,7 +34,7 @@ function Sidebar() {
     {
       title: "Dashboard",
       icon: <Icon icon="mingcute:grid-2-fill" className="bg-transparent" />,
-      path: "/admin",
+      path: user ? "/admin" : "/login",
     },
     {
       title: "Forum Management",
@@ -84,6 +88,11 @@ function Sidebar() {
       path: user ? "/admin/admin/faqs" : "/login",
     },
     {
+      title: "Logs",
+      icon: <FaRegFileAlt className="bg-transparent" />,
+      path: user ? "/admin/logs" : "/login",
+    },
+    {
       title: "Banner Management",
       icon: <CiSettings className="bg-transparent" />,
       path: user ? "/admin/banner" : "/login",
@@ -117,7 +126,7 @@ function Sidebar() {
 
   return (
     <div
-      className="md:w-[230px] left-0 overflow-y-auto h-full w-[60px] bg-white fixed md:block z-0 pt-10"
+      className="md:w-[230px] left-0 overflow-y-auto h-full w-[60px] bg-white fixed md:block z-0 pt-1"
       style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
     >
       <div className="w-full flex flex-col items-start gap-2 border-slate-300 bg-[#fff] py-5">

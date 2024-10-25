@@ -10,7 +10,6 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import ProductList from "./ProductList";
 
-
 function Product() {
   //   const token = useSelector((state) => state.token.token);
   // const navigate = useNavigate();
@@ -38,7 +37,7 @@ function Product() {
         //   },
         // }
       );
-    //   console.log(response.data, "fffff");
+      //   console.log(response.data, "fffff");
       setLoading(false);
 
       setList(response.data);
@@ -47,16 +46,10 @@ function Product() {
       console.error("Error fetching data:", error);
     }
   };
-  
+
   useEffect(() => {
     fetchData();
   }, []);
-
-
-
-
-
-
 
   const getProductListByStatus = (status) => {
     return list?.filter((item) => item.status === status.toLowerCase());
@@ -103,57 +96,6 @@ function Product() {
     );
   };
 
-  // const [categoryOptionsOpen, setCategoryOptionsOpen] = useState(false);
-  // const [categoryOptions, setCategoryOptions] = useState([
-  //   "Category 1",
-  //   "Category 2",
-  // ]);
-  // const [subCategoryOptions, setSubCategoryOptions] = useState([
-  //   "Sub Category 1",
-  //   "Sub Category 2",
-  // ]);
-  // const [productOptions, setProductOptions] = useState([
-  //   "Product 1",
-  //   "Product 2",
-  // ]);
-  // const [subCategoryOptionsOpen, setSubCategoryOptionsOpen] = useState(false);
-  // const [productOptionsOpen, setProductOptionsOpen] = useState(false);
-  // const menuRef = useRef(null);
-
-  // useEffect(() => {
-  //   const handleOutsideClick = (event) => {
-  //     if (menuRef.current && !menuRef.current.contains(event.target)) {
-  //       setCategoryOptionsOpen(false);
-  //       setSubCategoryOptionsOpen(false);
-  //       setProductOptionsOpen(false);
-  //     }
-  //   };
-
-  //   document.addEventListener("mousedown", handleOutsideClick);
-
-  //   return () => {
-  //     document.removeEventListener("mousedown", handleOutsideClick);
-  //   };
-  // }, []);
-
-  // const toggleCategoryOptions = () => {
-  //   setCategoryOptionsOpen(!categoryOptionsOpen);
-  //   setSubCategoryOptionsOpen(false);
-  //   setProductOptionsOpen(false);
-  // };
-
-  // const toggleSubCategoryOptions = () => {
-  //   setSubCategoryOptionsOpen(!subCategoryOptionsOpen);
-  //   setCategoryOptionsOpen(false);
-  //   setProductOptionsOpen(false);
-  // };
-
-  // const toggleProductOptions = () => {
-  //   setProductOptionsOpen(!productOptionsOpen);
-  //   setCategoryOptionsOpen(false);
-  //   setSubCategoryOptionsOpen(false);
-  // };
-
   return (
     <>
       <div className="w-full">
@@ -183,11 +125,10 @@ function Product() {
               );
             })}
           </div>
-
         </div>
-   
-     {/* Search Sections */}
-     {/* <div className="menu-main-container " ref={menuRef}>
+
+        {/* Search Sections */}
+        {/* <div className="menu-main-container " ref={menuRef}>
         <div
           className="menu-main-container-items"
           onClick={toggleCategoryOptions}
