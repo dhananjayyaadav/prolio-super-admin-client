@@ -17,6 +17,9 @@ import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux"; // Import useDispatch
 import { clearToken } from "../../store/tokenSlice"; // Import the clearToken action
 import Swal from "sweetalert2"; // Import SweetAlert
+import { Building2 } from "lucide-react";
+
+
 
 function Sidebar() {
   const location = useLocation();
@@ -83,6 +86,15 @@ function Sidebar() {
       icon: <FaRegQuestionCircle className="bg-transparent" />,
       path: user ? "/admin/admin/faqs" : "/login",
     },
+
+    {
+      title: "Department",
+      icon: <Building2 className="bg-transparent" size={20} />,
+      path: user ? "/admin/department" : "/login",
+    },
+
+
+
     {
       title: "Banner Management",
       icon: <CiSettings className="bg-transparent" />,

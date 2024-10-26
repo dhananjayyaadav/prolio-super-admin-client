@@ -17,11 +17,12 @@ import Test from "../components/Banner/Test";
 import ForumManagement from "../components/forum/ForumManagement";
 import Analytics from "../components/analytics/Analytics";
 import LoginPage from "../pages/LoginPage"; // Import the LoginPage
+import Department from "../components/Departments/Department";
 
 function Home() {
   const token = useSelector((state) => state.token.token);
   const location = useLocation();
-  
+
   return (
     <div className="flex flex-col h-screen">
       {/* Show the Navbar only if the user is logged in and not on the login page */}
@@ -77,6 +78,7 @@ function Home() {
                 />
                 <Route path="/admin/product" element={<Product />} />
                 <Route path="/admin/banner" element={<BannerManagement />} />
+                <Route path="/admin/department" element={<Department />} />
               </>
             )}
           </Routes>
