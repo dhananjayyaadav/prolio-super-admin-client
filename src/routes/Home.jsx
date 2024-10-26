@@ -19,6 +19,7 @@ import Analytics from "../components/analytics/Analytics";
 import LoginPage from "../pages/LoginPage"; // Import the LoginPage
 import LogPage from "../components/Logs/LogPage";
 import AdminDashboard from "../components/Admin/AdminDashboard";
+import Department from "../components/Departments/Department";
 
 function Home() {
   const token = useSelector((state) => state.token.token);
@@ -81,6 +82,7 @@ function Home() {
                 <Route path="/admin/banner" element={<BannerManagement />} />
                 <Route path="/admin/logs" element={<LogPage />} />
                 <Route path="/admin" element={<AdminDashboard />} />
+                <Route path="/admin/department" element={<Department />} />
               </>
             )}
           </Routes>
