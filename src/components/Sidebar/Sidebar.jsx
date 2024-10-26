@@ -85,11 +85,11 @@ function Sidebar() {
       path: user ? "/admin/product-tips" : "/login",
     },
 
-    {
-      title: "Faqs",
-      icon: <FaRegQuestionCircle className="bg-transparent" />,
-      path: user ? "/admin/admin/faqs" : "/login",
-    },
+    // {
+    //   title: "Faqs",
+    //   icon: <FaRegQuestionCircle className="bg-transparent" />,
+    //   path: user ? "/admin/admin/faqs" : "/login",
+    // },
 
     {
       title: "Department",
