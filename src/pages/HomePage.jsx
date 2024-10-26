@@ -15,7 +15,8 @@ import Opportunities from "../components/Opportunities/Opportunities";
 import BannerManagement from "../components/Banner/BannerManagement";
 import forumManagement from "../components/forum/ForumManagement";
 import AdminDashboard from "../components/Admin/AdminDashboard";
-import LogPage from "../components/Logs/LogPage";import Department from "../components/Departments/Department";
+import LogPage from "../components/Logs/LogPage";
+import Department from "../components/Departments/Department";
 
 function HomePage() {
   return (
