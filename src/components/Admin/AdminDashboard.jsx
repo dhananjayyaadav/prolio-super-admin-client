@@ -131,8 +131,8 @@ const StatCard = ({ icon, value, title }) => (
 
 const AdminDashboard = () => {
   return (
-    <div className="p-6 bg-gray-50 min-h-screen">
-      <div className="mb-6 flex justify-between items-center">
+    <div className="p-3 bg-gray-50 min-h-screen">
+      <div className="mb-1 flex justify-between items-center">
         <h1 className="text-xl font-bold">Dashboard</h1>
         <div className="flex gap-2">
           <button className="p-2 rounded-full bg-blue-100">
