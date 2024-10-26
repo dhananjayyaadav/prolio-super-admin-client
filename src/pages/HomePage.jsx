@@ -14,6 +14,8 @@ import Product from "../components/Product/Product";
 import Opportunities from "../components/Opportunities/Opportunities";
 import BannerManagement from "../components/Banner/BannerManagement";
 import forumManagement from "../components/forum/ForumManagement";
+import AdminDashboard from "../components/Admin/AdminDashboard";
+import LogPage from "../components/Logs/LogPage";
 import Department from "../components/Departments/Department";
 
 function HomePage() {
@@ -47,6 +49,8 @@ function HomePage() {
             ></Route>
             <Route path="/admin/product" element={<Product />}></Route>
             <Route path="/admin/banner" element={<BannerManagement />}></Route>
+            <Route path="/admin/logs" element={<LogPage />}></Route>
+            <Route path="/admin" element={<AdminDashboard />}></Route>
             <Route path="/admin/department" element={<Department />}></Route>
           </Routes>
         </div>

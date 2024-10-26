@@ -17,6 +17,8 @@ import Test from "../components/Banner/Test";
 import ForumManagement from "../components/forum/ForumManagement";
 import Analytics from "../components/analytics/Analytics";
 import LoginPage from "../pages/LoginPage"; // Import the LoginPage
+import LogPage from "../components/Logs/LogPage";
+import AdminDashboard from "../components/Admin/AdminDashboard";
 import Department from "../components/Departments/Department";
 
 function Home() {
@@ -78,6 +80,8 @@ function Home() {
                 />
                 <Route path="/admin/product" element={<Product />} />
                 <Route path="/admin/banner" element={<BannerManagement />} />
+                <Route path="/admin/logs" element={<LogPage />} />
+                <Route path="/admin" element={<AdminDashboard />} />
                 <Route path="/admin/department" element={<Department />} />
               </>
             )}

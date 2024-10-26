@@ -128,7 +128,7 @@ function Navbar() {
           {/* </Link> */}
           <span className="text-white text-lg font-santoshi hidden md:block bg-blue-900 px-6 py-1">
             {" "}
-            Categories
+            {/* Categories */}
           </span>
         </div>
 
