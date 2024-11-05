@@ -6,7 +6,7 @@ import { TiPencil } from "react-icons/ti";
 import { LiaClipboardCheckSolid } from "react-icons/lia";
 import { CiSettings } from "react-icons/ci";
 import { FaPeopleGroup } from "react-icons/fa6";
-import { IoCubeOutline } from "react-icons/io5";
+import { IoCubeOutline, IoFlagOutline } from "react-icons/io5";
 import { GrAnalytics } from "react-icons/gr";
 import {
   FaRegLightbulb,
@@ -63,6 +63,11 @@ function Sidebar() {
       title: "Products",
       icon: <IoCubeOutline className="bg-transparent" />,
       path: user ? "/admin/product" : "/login",
+    },
+    {
+      title: "Product Reports",
+      icon: <IoFlagOutline  className="bg-transparent" />,
+      path: user ? "/admin/reports" : "/login",
     },
     {
       title: "Opportunities",
