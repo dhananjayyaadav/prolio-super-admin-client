@@ -16,8 +16,12 @@ import "react-toastify/dist/ReactToastify.css";
 import { useSelector } from "react-redux";
 import ProductDetails1 from "../Re-use/ProductDetail1";
 import Swal from "sweetalert2";
+import { useParams } from "react-router-dom";
 
-function ProductSinglePage({ id, onClose, headers }) {
+function ProductSinglePage({ id: propId, onClose, headers }) {
+  const { productId: urlId } = useParams();
+  // const { id } = useParams();
+
   const token = useSelector((state) => state.token.token);
 
   const [loading, setLoading] = useState(false);
@@ -40,23 +44,44 @@ function ProductSinglePage({ id, onClose, headers }) {
 
   useEffect(() => {
     setLoading(true);
+
     const fetchData = async () => {
+      // Determine the activeId and check which ID is missing
+      const activeId = propId || urlId;
+
+      if (!activeId) {
+        if (!propId && !urlId) {
+          console.error(
+            "No product ID available - neither prop ID nor URL parameter found"
+          );
+        } else if (!propId) {
+          console.error("Prop ID is missing.");
+        } else if (!urlId) {
+          console.error("URL ID parameter is missing.");
+        }
+
+        setLoading(false);
+        return;
+      }
+
       try {
         const response = await axios.get(
-          `${apiURL}/product/getProductById/${id}`
+          `${apiURL}/product/getProductById/${activeId}`,
+          { headers }
         );
-        console.log(response.data?.data, "dddddddddddddddd");
-        setProductImage(response.data?.productImages);
-        setFinishedProductImages(response.data?.finishedProductImages);
-        setData(response.data?.data);
-        setLoading(false);
+
+        setProductImage(response.data?.productImages || []);
+        setFinishedProductImages(response.data?.finishedProductImages || []);
+        setData(response.data?.data || {});
       } catch (error) {
-        console.log("Error fetching data:", error);
+        console.error("Error fetching product data:", error.message);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchData();
-  }, [headers]);
+  }, [propId, urlId, headers]);
 
   const renderComponent = () => {
     switch (selectedButton) {
@@ -274,14 +299,14 @@ function ProductSinglePage({ id, onClose, headers }) {
 
                 <div className="md:w-1/5 md:px-5 md:hidden my-6 md:mt-0">
                   <div className="md:w-28  bg-transparent  items-center ">
-                    <button className="bg-blue-200 text-blue-800 border border-blue-900 py-2 font-semibold w-full  rounded-md">
+                    {/* <button className="bg-blue-200 text-blue-800 border border-blue-900 py-2 font-semibold w-full  rounded-md">
                       <Link
                         to={`/admin/edit-product/${id}`}
                         className="bg-transparent"
                       >
                         Edit
                       </Link>
-                    </button>
+                    </button> */}
                     <div className="w-full  bg-transparent  items-center  mt-2">
                       {renderButtons(data?.status)}
                     </div>
@@ -514,14 +539,14 @@ function ProductSinglePage({ id, onClose, headers }) {
 
               <div className="md:w-1/5 px-5 hidden md:block my-6 md:mt-0">
                 <div className="md:w-28  bg-transparent  items-center ">
-                  <button className="bg-blue-200 text-blue-800 border border-blue-900 py-2 font-semibold w-full  rounded-md">
+                  {/* <button className="bg-blue-200 text-blue-800 border border-blue-900 py-2 font-semibold w-full  rounded-md">
                     <Link
                       to={`/admin/edit-product/${id}`}
                       className="bg-transparent"
                     >
-                      Edit
+                      Editt
                     </Link>
-                  </button>
+                  </button> */}
                   <div className="w-full  bg-transparent  items-center  mt-2">
                     {renderButtons(data?.status)}
                   </div>

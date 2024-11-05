@@ -150,7 +150,7 @@ function Navbar() {
             <path d="M20 20l-4.579-4.579M8 15a7 7 0 100-14 7 7 0 000 14z"></path>
           </svg>
         </div>
-        <div className="flex justify-end  md:w-60 px-3 md:mx-4 items-center gap-3 ">
+        <div className="flex justify-end  md:w-60 px-3 md:mx-4 items-center gap-3">
           <div className="w-9 h-9  rounded-full bg-blue-50 flex items-center justify-center cursor-pointer">
             <Icon
               icon="iconamoon:notification-light"
