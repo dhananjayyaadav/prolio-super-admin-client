@@ -82,7 +82,7 @@ function Product() {
         : getProductListByStatus(statusMap[selectedButton]);
 
     return (
-      <ProductList list={data} header={selectedButton} onSubmit={fetchData} />
+      <ProductList list={data}  header={selectedButton} onSubmit={fetchData} />
     );
   };
 
@@ -101,7 +101,7 @@ function Product() {
       <div className="w-full">
         <div className="flex justify-between  m-2">
           <h1 className="font-santoshi text-xl  font-semibold text-blue-900">
-            Products
+            Product
           </h1>
         </div>
 

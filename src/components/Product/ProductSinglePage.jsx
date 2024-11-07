@@ -6,8 +6,7 @@ import shareIcone from "../../assets/shareIcon.png";
 import { IoEyeSharp } from "react-icons/io5";
 import { RiShareForwardLine } from "react-icons/ri";
 import SocialComponent from "./SocialComponent";
-// import VariationComponents from "../Re-use/VariationComponents";
-// import ProductDetails1 from "../Re-use/ProductDetails1";
+
 import cross from "../../assets/cross.png";
 import { Link } from "react-router-dom";
 import { FaPeopleGroup } from "react-icons/fa6";
@@ -19,10 +18,9 @@ import Swal from "sweetalert2";
 import { useParams } from "react-router-dom";
 
 function ProductSinglePage({ id: propId, onClose, headers }) {
-  const { productId: urlId } = useParams();
-  // const { id } = useParams();
+  const { id } = useParams();
 
-  const token = useSelector((state) => state.token.token);
+  const token = localStorage.getItem("token");
 
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState();
@@ -46,27 +44,9 @@ function ProductSinglePage({ id: propId, onClose, headers }) {
     setLoading(true);
 
     const fetchData = async () => {
-      // Determine the activeId and check which ID is missing
-      const activeId = propId || urlId;
-
-      if (!activeId) {
-        if (!propId && !urlId) {
-          console.error(
-            "No product ID available - neither prop ID nor URL parameter found"
-          );
-        } else if (!propId) {
-          console.error("Prop ID is missing.");
-        } else if (!urlId) {
-          console.error("URL ID parameter is missing.");
-        }
-
-        setLoading(false);
-        return;
-      }
-
       try {
         const response = await axios.get(
-          `${apiURL}/product/getProductById/${activeId}`,
+          `${apiURL}/product/getProductById/${id}`,
           { headers }
         );
 
@@ -81,7 +61,7 @@ function ProductSinglePage({ id: propId, onClose, headers }) {
     };
 
     fetchData();
-  }, [propId, urlId, headers]);
+  }, []);
 
   const renderComponent = () => {
     switch (selectedButton) {
@@ -156,25 +136,78 @@ function ProductSinglePage({ id: propId, onClose, headers }) {
     );
   };
 
+  // const handleBlock = async (status) => {
+  //   try {
+  //     const res = await axios.put(
+  //       `${apiURL}/product/changeStatus/${id}`,
+  //       {
+  //         status: status,
+  //       },
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${token}`,
+  //         },
+  //       }
+  //     );
+
+  //     toast.success(`Product ${res.data} Successfully`);
+  //     onClose();
+  //   } catch (error) {
+  //     toast.error(error.message);
+  //     // onClose();
+  //   }
+  // };
+
   const handleBlock = async (status) => {
     try {
-      const res = await axios.put(
-        `${apiURL}/product/changeStatus/${id}`,
-        {
-          status: status,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      // First show confirmation dialog
+      const result = await Swal.fire({
+        title: "Are you sure?",
+        text: `Do you want to ${status} this product?`,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, proceed!",
+      });
 
-      toast.success(`Product ${res.data} Successfully`);
-      onClose();
+      if (result.isConfirmed) {
+        // Show loading state
+        Swal.fire({
+          title: "Processing...",
+          allowOutsideClick: false,
+          didOpen: () => {
+            Swal.showLoading();
+          },
+        });
+
+        const res = await axios.put(
+          `${apiURL}/product/changeStatus/${id}`,
+          {
+            status: status,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        // Show success message
+        await Swal.fire({
+          icon: "success",
+          title: "Success!",
+          text: `Product ${res.data} Successfully`,
+          timer: 1500,
+        });
+      }
     } catch (error) {
-      toast.error(error.message);
-      // onClose();
+      // Show error message
+      await Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: error.message || "Something went wrong!",
+      });
     }
   };
 
@@ -221,11 +254,11 @@ function ProductSinglePage({ id: propId, onClose, headers }) {
                       />
                     ))}
                   </div>
-                  <div className="md:w-[300px] md:h-[400px] object-cover">
+                  <div className="md:w-[300px] md:h-[400px] object-contain">
                     <img
                       src={activeImage}
                       alt="activeImage"
-                      className="w-full h-full rounded-md object-cover"
+                      className="w-full h-full rounded-md object-contain"
                     />
                   </div>
 
@@ -289,7 +322,7 @@ function ProductSinglePage({ id: propId, onClose, headers }) {
                     <div className="pt-4">
                       <button
                         disabled
-                        className="bg-gray-300 text-black font-semibold w-full py-3 rounded-md"
+                        className="bg-gray-300 text-black font-semibold w-full py-3 rounded-md cursor-not-allowed"
                       >
                         Send Enquiry
                       </button>
@@ -299,14 +332,6 @@ function ProductSinglePage({ id: propId, onClose, headers }) {
 
                 <div className="md:w-1/5 md:px-5 md:hidden my-6 md:mt-0">
                   <div className="md:w-28  bg-transparent  items-center ">
-                    {/* <button className="bg-blue-200 text-blue-800 border border-blue-900 py-2 font-semibold w-full  rounded-md">
-                      <Link
-                        to={`/admin/edit-product/${id}`}
-                        className="bg-transparent"
-                      >
-                        Edit
-                      </Link>
-                    </button> */}
                     <div className="w-full  bg-transparent  items-center  mt-2">
                       {renderButtons(data?.status)}
                     </div>
@@ -374,179 +399,13 @@ function ProductSinglePage({ id: propId, onClose, headers }) {
                       </button>
                     ))}
                   </div>
-                  {/* Render Component based on Dropdown */}
+
                   {renderComponent()}
-                </div>
-
-                {/* Finished Product Images */}
-                {finishedProductImages && finishedProductImages !== 0 && (
-                  <div className="m-3 mt-5 bg-white p-2 md:px-10">
-                    <p className=" font-santoshi text-blue-900 font-semibold">
-                      Finished Product Images
-                    </p>
-                    <div className="flex items-center gap-4 bg-transparent h-28">
-                      {finishedProductImages?.map((image, index) => (
-                        <img
-                          key={index}
-                          src={image}
-                          alt={`Image ${index}`}
-                          className="w-24 h-24 rounded-md bg-transparent cursor-pointer"
-                          onClick={() => setValue(index)}
-                        />
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                <div className="w-full mt-4 h-[250px] bg-white pl-6 py-3 md:flex pb-10">
-                  <div className="md:w-2/5 md:border-r-[2px] md;border-r-black pr-2 flex flex-col gap-2 bg-white">
-                    <h1 className="text-left font-bold bg-white">
-                      Opportunities
-                    </h1>
-
-                    <div className="w-full flex items-center gap-2 bg-white">
-                      <div className="w-[95%] border py-3 px-2 bg-white border-blue-800 rounded-xl flex justify-between items-center">
-                        <h1 className="text-sm font-bold px-1 bg-white">
-                          Become an authorized Specialist
-                        </h1>
-                        <button
-                          className="px-3 py-1 text-sm bg-blue-900 bg-lightBlue-800 text-white rounded-md"
-                          onClick={() => setShowOppertunity(true)}
-                        >
-                          Apply
-                        </button>
-                      </div>
-                      <div className="w-[20px] h-[20px] border-[1px] border-black flex justify-center bg-white items-center rounded-full">
-                        i{" "}
-                      </div>
-                    </div>
-
-                    <div className="w-full flex items-center bg-white gap-2">
-                      <div className="w-[95%] border py-3 px-2  border-blue-800 rounded-xl bg-white flex justify-between items-center">
-                        <h1 className="text-sm font-bold px-1 bg-white">
-                          Become a supplier
-                        </h1>
-                        <button
-                          className="px-3 py-1 text-sm bg-blue-900 bg-lightBlue-800 text-white rounded-md"
-                          onClick={() => setShowOppertunity(true)}
-                        >
-                          Apply
-                        </button>
-                      </div>
-                      <div className="w-[20px] h-[20px] border-[1px] border-black bg-white flex justify-center items-center rounded-full">
-                        i{" "}
-                      </div>
-                    </div>
-
-                    <div className="w-full flex items-center gap-2 bg-white ">
-                      <div className="w-[95%] border py-3 px-2 bg-white  border-blue-800 rounded-xl flex justify-between items-center">
-                        <h1 className="text-sm font-bold px-1 bg-white">
-                          Become an Dealer/Reseller
-                        </h1>
-                        <button
-                          className="px-3 py-1 text-sm bg-blue-900  bg-lightBlue-800 text-white rounded-md"
-                          onClick={() => setShowOppertunity(true)}
-                        >
-                          Apply
-                        </button>
-                      </div>
-                      <div className="w-[20px] h-[20px] border-[1px] border-black flex justify-center items-center rounded-full">
-                        i{" "}
-                      </div>
-                    </div>
-                  </div>
-                  <div className="contain md:w-3/5 px-2 h-full mt-4 md:mt-0 md:overflow-y-scroll bg-white ">
-                    <div className="w-full flex justify-between just items-center gap-5 bg-white">
-                      <h1 className="text-left text-black font-bold text-lg  bg-white">
-                        Product Question & Answer
-                      </h1>
-                      <div className="px-4 bg-transparent flex flex-row gap-4 ">
-                        <input
-                          className="h-4 py-3 px-4 text-xs rounded-md focus:outline-none bg-white border border-gray-500"
-                          type="search"
-                          name=""
-                          id=""
-                          placeholder="what"
-                        />
-                        <img
-                          src={cross}
-                          alt=""
-                          className="bg-transparent"
-                          // onClick={toggleSearch}
-                        />
-                      </div>
-                    </div>
-
-                    <div className="flex justify-between items-center mt-2 bg-white">
-                      <span className="text-xs bg-white">
-                        Didn't get the right answer you were{" "}
-                      </span>
-                      <button className="px-3 py-1 bg-blue-900 text-sm  bg-lightBlue-800 text-white rounded-md">
-                        Post Question
-                      </button>
-                    </div>
-
-                    <div className="w-full text-left bg-white flex flex-col border-b-[1px] border-b-slate-900 py-2">
-                      <span className="font-semibold text-left bg-white">
-                        Q:{" "}
-                        <span className="font-normal text-xs bg-white">
-                          Lorem Ipsum is simply dummy text of the printing and
-                          typesetting industry. Lorem Ipsum has text ever{" "}
-                        </span>{" "}
-                        <span className="font-normal text-xs bg-white">?</span>
-                      </span>
-
-                      <span className="font-semibold text-left bg-white">
-                        A:{" "}
-                        <span className="font-medium text-xs bg-white">
-                          Lorem Ipsum is simply dummy text of the printing and
-                          typesetting industry.
-                        </span>{" "}
-                        <span className="font-normal text-xs bg-white">?</span>
-                      </span>
-
-                      <span className="text-xs text-gray-600 bg-white flex items-center gap-2">
-                        {" "}
-                        <Icon icon="ci:octagon-check" /> certified Seller
-                      </span>
-                    </div>
-                    <div className="w-full text-left flex flex-col bg-white border-b-[1px] border-b-slate-900 py-2">
-                      <span className="font-semibold text-left bg-white">
-                        Q:{" "}
-                        <span className="font-normal text-xs bg-white">
-                          Lorem Ipsum is simply dummy text of the printing and
-                          typesetting industry. Lorem Ipsum has text ever{" "}
-                        </span>{" "}
-                        <span className="font-normal text-xs">?</span>
-                      </span>
-
-                      <span className="font-semibold text-left">
-                        A:{" "}
-                        <span className="font-medium text-xs">
-                          Lorem Ipsum is simply dummy text of the printing and
-                          typesetting industry.
-                        </span>{" "}
-                        <span className="font-normal text-xs">?</span>
-                      </span>
-
-                      <span className="text-xs text-gray-600 flex items-center gap-2">
-                        <Icon icon="ci:octagon-check" /> certified Seller
-                      </span>
-                    </div>
-                  </div>
                 </div>
               </div>
 
               <div className="md:w-1/5 px-5 hidden md:block my-6 md:mt-0">
                 <div className="md:w-28  bg-transparent  items-center ">
-                  {/* <button className="bg-blue-200 text-blue-800 border border-blue-900 py-2 font-semibold w-full  rounded-md">
-                    <Link
-                      to={`/admin/edit-product/${id}`}
-                      className="bg-transparent"
-                    >
-                      Editt
-                    </Link>
-                  </button> */}
                   <div className="w-full  bg-transparent  items-center  mt-2">
                     {renderButtons(data?.status)}
                   </div>
