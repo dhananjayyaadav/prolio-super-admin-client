@@ -6,8 +6,10 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import ProductSinglePage from "./ProductSinglePage";
+import { useNavigate } from "react-router-dom";
 
 function ProductList({ list, header, onSubmit }) {
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(""); // For Category filter
   const [selectedSubCategory, setSelectedSubCategory] = useState(""); // For SubCategory filter
@@ -89,6 +91,7 @@ function ProductList({ list, header, onSubmit }) {
       header: "Status",
       accessorKey: "status",
     },
+
   ];
 
   const table = useReactTable({
@@ -165,11 +168,13 @@ function ProductList({ list, header, onSubmit }) {
   const [showTable, setShowTable] = useState(true);
   const [showRowTableProduct, setShowRowTableProduct] = useState(false);
 
-  const handleRowClick = (event) => {
-    const clickedId = event.currentTarget.getAttribute("data-id");
-    setSelectedRowId(clickedId);
-    setShowTable(false);
-    setShowRowTableProduct(true);
+  const handleRowClick = (rowId) => {
+    // const clickedId = event.currentTarget.getAttribute("data-id");
+    // setSelectedRowId(clickedId);
+    // setShowTable(false);
+    // setShowRowTableProduct(true);
+
+    navigate(`/admin/product/${rowId}`);
   };
 
   const handleClose = () => {
@@ -250,7 +255,9 @@ function ProductList({ list, header, onSubmit }) {
                   <tr
                     key={row.id}
                     className="border-b cursor-pointer hover:bg-white"
-                    onClick={handleRowClick}
+                    onClick={() => {
+                      handleRowClick(row.original.id);
+                    }}
                     data-id={row.original.id}
                   >
                     {row.getVisibleCells().map((cell) => (
