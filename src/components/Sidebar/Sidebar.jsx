@@ -23,8 +23,6 @@ import { clearToken } from "../../store/tokenSlice"; // Import the clearToken ac
 import Swal from "sweetalert2"; // Import SweetAlert
 import { Building2 } from "lucide-react";
 
-
-
 function Sidebar() {
   const location = useLocation();
   const dispatch = useDispatch();
@@ -39,11 +37,11 @@ function Sidebar() {
       icon: <Icon icon="mingcute:grid-2-fill" className="bg-transparent" />,
       path: user ? "/admin" : "/login",
     },
-    {
-      title: "Forum Management",
-      icon: <Icon icon="mingcute:grid-2-fill" className="bg-transparent" />,
-      path: "/admin/forum",
-    },
+    // {
+    //   title: "Forum Management",
+    //   icon: <Icon icon="mingcute:grid-2-fill" className="bg-transparent" />,
+    //   path: "/admin/forum",
+    // },
     {
       title: "Company Profiles",
       icon: <CgBox className="bg-transparent" />,
@@ -66,19 +64,19 @@ function Sidebar() {
     },
     {
       title: "Product Reports",
-      icon: <IoFlagOutline  className="bg-transparent" />,
+      icon: <IoFlagOutline className="bg-transparent" />,
       path: user ? "/admin/reports" : "/login",
     },
-    {
-      title: "Opportunities",
-      icon: <FaRegLightbulb className="bg-transparent" />,
-      path: user ? "/admin/opportunities" : "/login",
-    },
-    {
-      title: "Enquiries",
-      icon: <FaPeopleGroup className="bg-transparent" />,
-      path: user ? "/admin/admin/enquiries" : "/login",
-    },
+    // {
+    //   title: "Opportunities",
+    //   icon: <FaRegLightbulb className="bg-transparent" />,
+    //   path: user ? "/admin/opportunities" : "/login",
+    // },
+    // {
+    //   title: "Enquiries",
+    //   icon: <FaPeopleGroup className="bg-transparent" />,
+    //   path: user ? "/admin/admin/enquiries" : "/login",
+    // },
     {
       title: "Analytics",
       icon: <GrAnalytics className="bg-transparent" />,
@@ -101,8 +99,6 @@ function Sidebar() {
       icon: <Building2 className="bg-transparent" size={20} />,
       path: user ? "/admin/department" : "/login",
     },
-
-
 
     {
       title: "Logs",

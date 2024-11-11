@@ -17,20 +17,6 @@ import { IoMdLogOut } from "react-icons/io";
 // import axios from "axios";
 
 function Navbar() {
-  // const dispatch = useDispatch();
-  // const navigate = useNavigate();
-  // const user = useSelector((state) => state.token.user);
-  // const token = useSelector((state) => state.token.token);
-  // const userType = useSelector((state) => state.token.role);
-
-  // const [userDetaisl, setUserDetails] = useState();
-
-  // const submitLogout = () => {
-  //   dispatch(clearToken());
-  //   navigate("/");
-  // };
-  // const apiURL = process.env.REACT_APP_API_URL;
-
   const [navLinks, setNavLinks] = useState([
     {
       title: "Dashboard",
