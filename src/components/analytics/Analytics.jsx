@@ -1,15 +1,14 @@
-import React from "react";
-import { Line, Bar } from "react-chartjs-2";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { Line } from "react-chartjs-2";
 import {
   Chart as ChartJS,
   CategoryScale,
   LinearScale,
   PointElement,
   LineElement,
-  BarElement,
   Title,
   Tooltip,
-  ArcElement,
   Legend,
   Filler,
 } from "chart.js";
@@ -20,145 +19,208 @@ import {
   UserPlus,
   ChevronRight,
   Calendar,
+  Download,
 } from "lucide-react";
-import {
-  ComposableMap,
-  Geographies,
-  Geography,
-  Marker,
-  ZoomableGroup,
-} from "react-simple-maps";
+import { useNavigate } from "react-router-dom";
+import UserGeolocationMap from "./UserGeolocationMap ";
+import * as XLSX from "xlsx"; // Import the XLSX library
+
 ChartJS.register(
   CategoryScale,
   LinearScale,
   PointElement,
   LineElement,
-  BarElement,
-  ArcElement,
   Title,
   Tooltip,
   Legend,
   Filler
 );
-const geoUrl =
-  "https://raw.githubusercontent.com/deldersveld/topojson/master/world-continents.json";
-const markers = [
-  { coordinates: [-73.935242, 40.73061], name: "New York" },
-  { coordinates: [2.352222, 48.856614], name: "Paris" },
-  { coordinates: [121.473701, 31.230416], name: "Shanghai" },
-];
-const StatCard = ({ title, value, icon: Icon }) => (
-  <div className="bg-white p-3 rounded-lg shadow-sm flex flex-col font-poppins">
-    <div className="flex items-center justify-between mb-1">
-      <h3 className="text-black font-semibold text-xs md:text-sm">{title}</h3>
-      <div className="p-1.5 rounded-lg bg-blue-100">
-        <Icon className="w-4 h-4 md:w-5 md:h-5 text-blue-900 m-1" />
+
+const apiURL = process.env.REACT_APP_API_URL;
+
+const StatCard = ({ title, value, icon: Icon, route }) => {
+  const navigate = useNavigate();
+
+  return (
+    <div className="bg-white p-3 rounded-lg shadow-sm flex flex-col font-poppins">
+      <div className="flex items-center justify-between mb-1">
+        <h3 className="text-black font-semibold text-xs md:text-sm">{title}</h3>
+        <div className="p-1.5 rounded-lg bg-blue-100">
+          <Icon className="w-4 h-4 md:w-5 md:h-5 text-blue-900 m-1" />
+        </div>
+      </div>
+      <div className="flex items-center justify-between">
+        <span className="text-base md:text-lg font-bold text-blue-800">
+          {value}
+        </span>
+        <button
+          className="text-blue-900 font-semibold flex items-center text-xs"
+          onClick={() => navigate(route)}
+        >
+          View More
+          <ChevronRight className="w-3 h-3 ml-1" />
+        </button>
       </div>
     </div>
-    <div className="flex items-center justify-between">
-      <span className="text-base md:text-lg font-bold text-blue-800">
-        {value}
-      </span>
-      <button className="text-blue-900 font-semibold flex items-center text-xs">
-        View More
-        <ChevronRight className="w-3 h-3 ml-1" />
-      </button>
-    </div>
-  </div>
-);
-const FormRequestItem = ({ icon: Icon, title, count }) => (
-  <div className="flex items-center justify-between p-2 bg-white rounded-lg mb-1 cursor-pointer hover:bg-gray-50">
-    <div className="flex items-center">
-      <div className="p-1.5 rounded-lg bg-blue-100 mr-2">
-        <Icon className="w-4 h-4 text-blue-600" />
-      </div>
-      <span className="text-xs md:text-sm">{title}</span>
-    </div>
-    <div className="flex items-center">
-      <span className="text-xs md:text-sm mr-1">({count})</span>
-      <ChevronRight className="w-3 h-3 text-gray-400" />
-    </div>
-  </div>
-);
+  );
+};
+
+const chartOptions = {
+  responsive: true,
+  plugins: {
+    legend: {
+      position: "top",
+    },
+    tooltip: {
+      mode: "index",
+      intersect: false,
+    },
+  },
+  scales: {
+    x: {
+      ticks: {
+        autoSkip: true,
+        maxRotation: 90,
+        minRotation: 45,
+      },
+    },
+  },
+};
+
 export default function AnalyticsDashboard() {
-  const days = ["Tue", "Wed", "Thu", "Fri", "Sat", "Sun", "Mon"];
-  const conversionData = {
-    labels: days,
-    datasets: [
-      {
-        label: "Views",
-        data: [5000, 12000, 8000, 20000, 7000, 10000, 11000],
-        backgroundColor: "#FCD34D",
-      },
-      {
-        label: "Enquiries",
-        data: [2000, 7000, 5000, 9000, 2000, 8000, 7000],
-        backgroundColor: "#3B82F6",
-      },
-    ],
-  };
-  const visitorInsightData = {
-    labels: days,
-    datasets: [
-      {
-        label: "Rare",
-        data: [1000, 4580, 1000, 15000, 10000, 5000, 20000],
-        fill: true,
-        backgroundColor: "rgba(0, 128, 0, 0.2)",
-        borderColor: "green",
-        tension: 0.4,
-      },
-      {
-        label: "New",
-        data: [2000, 3000, 2000, 10000, 15000, 10000, 15000],
-        fill: true,
-        backgroundColor: "rgba(59, 130, 246, 0.2)",
-        borderColor: "#3B82F6",
-        tension: 0.4,
-      },
-      {
-        label: "Loyal",
-        data: [500, 2000, 500, 8000, 12000, 8000, 12000],
-        fill: true,
-        backgroundColor: "rgba(251, 146, 60, 0.2)",
-        borderColor: "#FB923C",
-        tension: 0.4,
-      },
-    ],
-  };
-  const chartOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: {
-        display: true,
-        position: "top",
-        labels: {
-          boxWidth: 10,
-          font: {
-            size: 10,
-          },
+  const [companyCount, setCompanyCount] = useState(0);
+  const [forumCount, setForumCount] = useState(0);
+  const [productCount, setProductCount] = useState(0);
+  const [productReportCount, setProductReportCount] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [timeInterval, setTimeInterval] = useState("week");
+  const [performanceData, setPerformanceData] = useState({});
+  const navigate = useNavigate();
+
+  const transformChartData = (data, timeInterval) => {
+    if (!data || !data.performanceData) return null;
+
+    const sortedData = [...data.performanceData].sort((a, b) => {
+      if (a._id.year === b._id.year) {
+        if (timeInterval === "week") {
+          return a._id.week - b._id.week;
+        } else if (timeInterval === "monthly") {
+          return a._id.month - b._id.month;
+        }
+      }
+      return a._id.year - b._id.year;
+    });
+
+    let labels;
+    if (timeInterval === "week") {
+      labels = sortedData.map(
+        (item) => `Week ${item._id.week}, ${item._id.year}`
+      );
+    } else if (timeInterval === "monthly") {
+      labels = sortedData.map(
+        (item) => `Month ${item._id.month}, ${item._id.year}`
+      );
+    } else {
+      labels = sortedData.map((item) => `${item._id.year}`);
+    }
+
+    return {
+      labels,
+      datasets: [
+        {
+          label: "Company Growth",
+          data: sortedData.map((item) => item.companyCount),
+          borderColor: "#4CAF50",
+          backgroundColor: "rgba(76, 175, 80, 0.2)",
+          tension: 0.4,
+          fill: true,
+          pointRadius: 6,
+          pointHoverRadius: 8,
+          pointBackgroundColor: "#4CAF50",
+          pointBorderColor: "#fff",
+          pointBorderWidth: 2,
         },
-      },
-    },
-    scales: {
-      y: {
-        beginAtZero: true,
-        ticks: {
-          font: {
-            size: 10,
-          },
-        },
-      },
-      x: {
-        ticks: {
-          font: {
-            size: 10,
-          },
-        },
-      },
-    },
+      ],
+    };
   };
+
+  // Fetch total counts
+  useEffect(() => {
+    axios
+      .get(`${apiURL}/admin/totalCounts`)
+      .then((response) => {
+        setCompanyCount(response.data.totalCompanyCount);
+        setForumCount(response.data.totalForumCount);
+        setProductCount(response.data.totalProductCount);
+        setProductReportCount(response.data.totalProductReportCount);
+        setLoading(false);
+      })
+      .catch((error) => {
+        console.error("Error fetching total counts:", error);
+        setLoading(false);
+      });
+  }, []);
+
+  // Fetch performance data
+  useEffect(() => {
+    const fetchPerformanceData = async () => {
+      try {
+        const response = await axios.get(
+          `${apiURL}/visitor/company-performance`,
+          {
+            params: { type: timeInterval },
+          }
+        );
+        setPerformanceData(response.data);
+      } catch (error) {
+        console.error("Error fetching performance data:", error);
+      }
+    };
+
+    fetchPerformanceData();
+  }, [timeInterval]);
+
+  const handleIntervalChange = (e) => {
+    setTimeInterval(e.target.value);
+  };
+
+  // Function to download data as an Excel file
+  const downloadExcel = () => {
+    if (!performanceData.performanceData) {
+      alert("No performance data available to download.");
+      return;
+    }
+
+    // Prepare the data
+    const excelData = performanceData.performanceData.map((item) => ({
+      Year: item._id.year,
+      Week: item._id.week || "N/A", // In case there's no week field
+      Month: item._id.month || "N/A", // In case there's no month field
+      CompanyCount: item.companyCount,
+    }));
+
+    // Create a worksheet and workbook
+    const ws = XLSX.utils.json_to_sheet(excelData);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Company Performance");
+
+    // Trigger the download
+    XLSX.writeFile(wb, "Company_Performance.xlsx");
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-100 flex items-center justify-center">
+        <div className="flex items-center space-x-2">
+          <div className="w-8 h-8 border-4 border-t-transparent border-gray-600 rounded-full animate-spin"></div>
+          <div className="text-lg font-semibold text-gray-600">Loading...</div>
+        </div>
+      </div>
+    );
+  }
+
+  const chartData = transformChartData(performanceData, timeInterval);
+
   return (
     <div className="bg-gray-100 p-2 md:p-4 min-h-screen overflow-auto">
       <div className="flex justify-between items-center mb-4">
@@ -168,131 +230,62 @@ export default function AnalyticsDashboard() {
             <Calendar className="w-4 h-4" />
           </button>
           <button className="p-1.5 rounded bg-blue-600 text-white">
-            <svg
-              className="w-4 h-4"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
-              />
-            </svg>
+            <Download className="w-4 h-4" onClick={downloadExcel} />
           </button>
         </div>
       </div>
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mb-4">
-        <StatCard title="Total Enquiries" value="13,258" icon={Search} />
+
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
         <StatCard
-          title="Total Form Response"
-          value="13,258"
-          icon={MessageSquare}
+          icon={Search}
+          value={companyCount}
+          title="Total Companies"
+          route="/admin/company"
         />
-        <StatCard title="Total Visitors" value="13,258" icon={Users} />
-        <StatCard title="New Visitors" value="13,258" icon={UserPlus} />
+        <StatCard
+          icon={MessageSquare}
+          value={forumCount}
+          title="Total Forums"
+          route="/admin/forum"
+        />
+        <StatCard
+          icon={Users}
+          value={productCount}
+          title="Total Products"
+          route="/admin/product"
+        />
+        <StatCard
+          icon={UserPlus}
+          value={productReportCount}
+          title="Total Product Reports"
+          route="/admin/reports"
+        />
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 font-poppins">
-        <div className="bg-white p-3 rounded-lg">
-          <div className="flex justify-between items-center mb-2">
-            <h2 className="text-sm font-semibold">Conversion Rates</h2>
-            <select className="bg-blue-600 text-white px-2 py-1 rounded text-xs">
-              <option>Weekly</option>
-            </select>
-          </div>
-          <div className="h-40 md:h-48">
-            <Bar data={conversionData} options={chartOptions} />
-          </div>
-        </div>
-        <div className="bg-white p-3 rounded-lg shadow-md font-poppins">
-          <h2 className="text-sm font-semibold mb-2">Visitors Demographics</h2>
-          <div className="h-48 md:h-64">
-            <ComposableMap
-              projectionConfig={{
-                rotate: [-10, 0, 0],
-                scale: 147,
-              }}
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="md:col-span-2 bg-white p-6 rounded-lg shadow-md">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-xl font-semibold text-gray-800">
+              Company Performance
+            </h2>
+            <select
+              value={timeInterval}
+              onChange={handleIntervalChange}
+              className="border border-gray-300 rounded px-3 py-2"
             >
-              <ZoomableGroup center={[0, 0]} zoom={1}>
-                <Geographies geography={geoUrl}>
-                  {({ geographies }) =>
-                    geographies.map((geo) => (
-                      <Geography
-                        key={geo.rsmKey}
-                        geography={geo}
-                        fill="#ADD8E6"
-                        stroke="#D6D6DA"
-                        strokeWidth={0.5}
-                        style={{
-                          default: {
-                            fill: "#EAEFFF",
-                            outline: "none",
-                          },
-                          hover: {
-                            fill: "#3B82F6",
-                            outline: "none",
-                          },
-                        }}
-                      />
-                    ))
-                  }
-                </Geographies>
-                {markers.map(({ coordinates, name }) => (
-                  <Marker key={name} coordinates={coordinates}>
-                    <circle r={4} fill="#FF6347" />
-                    <text
-                      textAnchor="middle"
-                      y={-10}
-                      style={{
-                        fontFamily: "system-ui",
-                        fontSize: "8px",
-                        fill: "#5D5A6D",
-                      }}
-                    >
-                      {name}
-                    </text>
-                  </Marker>
-                ))}
-              </ZoomableGroup>
-            </ComposableMap>
+              <option value="week">Week</option>
+              <option value="monthly">Month</option>
+              <option value="yearly">Year</option>
+            </select>
+          </div>
+          <div className="h-80">
+            {chartData && <Line data={chartData} options={chartOptions} />}
           </div>
         </div>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 font-poppins">
-        <div className="bg-white p-3 rounded-lg ">
-          <div className="flex justify-between items-center mb-2">
-            <h2 className="text-sm font-semibold">Form Requests</h2>
-            <select className="bg-blue-600 text-white px-2 py-1 rounded text-xs">
-              <option>Weekly</option>
-            </select>
-          </div>
-          <div className="bg-white p-6 rounded-lg shadow-lg mb-6 hover:shadow-xl transition-shadow">
-            <FormRequestItem icon={Users} title="Reseller Forms" count="20" />
-          </div>
-          <div className="bg-white p-6 rounded-lg shadow-lg mb-6 hover:shadow-xl transition-shadow">
-            <FormRequestItem icon={Users} title="Supplier Forms" count="05" />
-          </div>
-          <div className="bg-white p-6 rounded-lg shadow-lg mb-6 hover:shadow-xl transition-shadow">
-            <FormRequestItem
-              icon={MessageSquare}
-              title="Service Center"
-              count="15"
-            />
-          </div>
-        </div>
-        <div className="md:col-span-2 bg-white p-3 rounded-lg font-poppins">
-          <div className="flex justify-between items-center mb-2">
-            <h2 className="text-sm font-semibold">Visitors Insight</h2>
-            <select className="bg-blue-600 text-white px-2 py-1 rounded text-xs">
-              <option>Weekly</option>
-            </select>
-          </div>
-          <div className="h-40 md:h-48">
-            <Line data={visitorInsightData} options={chartOptions} />
-          </div>
-        </div>
+
+      <div className="mt-6">
+        <UserGeolocationMap />
       </div>
     </div>
   );

@@ -37,11 +37,7 @@ function Sidebar() {
       icon: <Icon icon="mingcute:grid-2-fill" className="bg-transparent" />,
       path: user ? "/admin" : "/login",
     },
-    // {
-    //   title: "Forum Management",
-    //   icon: <Icon icon="mingcute:grid-2-fill" className="bg-transparent" />,
-    //   path: "/admin/forum",
-    // },
+
     {
       title: "Company Profiles",
       icon: <CgBox className="bg-transparent" />,
@@ -67,6 +63,34 @@ function Sidebar() {
       icon: <IoFlagOutline className="bg-transparent" />,
       path: user ? "/admin/reports" : "/login",
     },
+
+    {
+      title: "Analytics",
+      icon: <GrAnalytics className="bg-transparent" />,
+      path: user ? "/admin/analytics" : "/login",
+    },
+    {
+      title: "Forum Management",
+      icon: <Icon icon="mingcute:grid-2-fill" className="bg-transparent" />,
+      path: "/admin/forum",
+    },
+    // {
+    //   title: "Business Tips",
+    //   icon: <TiPencil className="bg-transparent" />,
+    //   path: user ? "/admin/product-tips" : "/login",
+    // },
+
+    // {
+    //   title: "Faqs",
+    //   icon: <FaRegQuestionCircle className="bg-transparent" />,
+    //   path: user ? "/admin/admin/faqs" : "/login",
+    // },
+
+    // {
+    //   title: "Department",
+    //   icon: <Building2 className="bg-transparent" size={20} />,
+    //   path: user ? "/admin/department" : "/login",
+    // },
     // {
     //   title: "Opportunities",
     //   icon: <FaRegLightbulb className="bg-transparent" />,
@@ -77,28 +101,6 @@ function Sidebar() {
     //   icon: <FaPeopleGroup className="bg-transparent" />,
     //   path: user ? "/admin/admin/enquiries" : "/login",
     // },
-    {
-      title: "Analytics",
-      icon: <GrAnalytics className="bg-transparent" />,
-      path: user ? "/admin/analytics" : "/login",
-    },
-    {
-      title: "Business Tips",
-      icon: <TiPencil className="bg-transparent" />,
-      path: user ? "/admin/product-tips" : "/login",
-    },
-
-    // {
-    //   title: "Faqs",
-    //   icon: <FaRegQuestionCircle className="bg-transparent" />,
-    //   path: user ? "/admin/admin/faqs" : "/login",
-    // },
-
-    {
-      title: "Department",
-      icon: <Building2 className="bg-transparent" size={20} />,
-      path: user ? "/admin/department" : "/login",
-    },
 
     {
       title: "Logs",

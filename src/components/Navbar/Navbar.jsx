@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Icon } from "@iconify-icon/react";
 import { LiaClipboardCheckSolid } from "react-icons/lia";
@@ -12,9 +12,8 @@ import { CgBox } from "react-icons/cg";
 import { LuKey } from "react-icons/lu";
 import { TbCategoryPlus } from "react-icons/tb";
 import { IoMdLogOut } from "react-icons/io";
-// import { useDispatch, useSelector } from "react-redux";
-// import { clearToken } from "../../store/tokenSlice";
-// import axios from "axios";
+import { Bell } from "lucide-react";
+import { BellOff } from "lucide-react";
 
 function Navbar() {
   const [navLinks, setNavLinks] = useState([
@@ -99,56 +98,199 @@ function Navbar() {
     path: "/profile",
   };
   const [Open, setOpen] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+  const [unreadCount, setUnreadCount] = useState(0);
+  const [unreadNotification, setUnreadNotifications] = useState([]);
+  const [showNotificationDropdown, setShowNotificationDropdown] =
+    useState(false);
+  const [activeFilter, setActiveFilter] = useState("unread");
+  const [isFetching, setIsFetching] = useState(false);
+
+  const [showChatDropdown, setShowChatDropdown] = useState(false);
+  const [readNotification, setReadNotifications] = useState([]);
+  const [showAllMessages, setShowAllMessages] = useState(false);
+  const [notifications, setNotifications] = useState([]);
+  const [notification, setNotification] = useState([]);
+  // Assuming notifications state contains all notifications
+  const unreadNotifications = notifications.filter((n) => !n.isRead);
+  const readNotifications = notifications.filter((n) => n.isRead);
+  const dropdownRef = useRef(null);
+
+  const handleScroll = (e) => {
+    const { scrollTop, scrollHeight, clientHeight } = e.target;
+    if (
+      scrollTop + clientHeight >= scrollHeight - 20 &&
+      !isFetching &&
+      hasMore
+    ) {
+      setPage((prev) => prev + 1);
+    }
+  };
   const handleMenu = () => {
     setOpen((prev) => !prev);
     console.log(Open);
   };
   return (
     <>
-      <nav className="w-full h-16  fixed flex gap-6 bg-blue-900   top-0 left-0 z-10 ">
-        <div className="text-white px-10 bg-blue-900 cursor-pointer flex  py-4 font-serif">
-          {/* <Link to={userType === "admin" ? "/admin" : "/"}> */}
-          <h1 className="text-white  bg-blue-900 cursor-pointer  font-semibold text-3xl  font-serif">
+      <nav className="w-full h-16 fixed flex justify-between items-center gap-6 bg-blue-900 top-0 left-0 z-10 px-4 md:px-10">
+        <div className="flex items-center space-x-4">
+          <h1 className="text-white font-semibold text-3xl font-serif cursor-pointer">
             Prolio
           </h1>
-          {/* </Link> */}
-          <span className="text-white text-lg font-santoshi hidden md:block bg-blue-900 px-6 py-1">
-            {" "}
+          <span className="hidden md:block text-white text-lg font-santoshi px-6 py-1">
             {/* Categories */}
           </span>
         </div>
 
-        <div className=" w-1/2  bg-blue-900 items-center pt-4 mx-16 relative  hidden md:block">
-          <input
-            type="text"
-            className="bg-blue-900 px-10 rounded-lg text-lg text-white  border-gray-500 border w-4/5  h-10 focus:outline-none"
-            placeholder="Search"
-          />
-          <svg
-            className="h-5 w-6 bg-blue-900 absolute top-7 mx-3 text-white"
-            fill="none"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="2"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path d="M20 20l-4.579-4.579M8 15a7 7 0 100-14 7 7 0 000 14z"></path>
-          </svg>
-        </div>
-        <div className="flex justify-end  md:w-60 px-3 md:mx-4 items-center gap-3">
-          <div className="w-9 h-9  rounded-full bg-blue-50 flex items-center justify-center cursor-pointer">
-            <Icon
-              icon="iconamoon:notification-light"
-              className="text-blue-900 text-3xl"
-            />
+        <div className="flex items-center gap-4">
+          {/* Notification Bell Button */}
+          <div className="relative">
+            <button
+              onClick={() => {
+                setShowNotificationDropdown(!showNotificationDropdown);
+                setShowChatDropdown(false);
+              }}
+              className="relative p-2 bg-blue-50 rounded-full hover:bg-blue-100 transition-colors duration-200"
+            >
+              <Bell className="w-6 h-6 text-blue-900" />
+              {unreadNotifications.length > 0 && (
+                <span className="absolute -top-1 -right-1 flex items-center justify-center w-5 h-5 text-xs font-bold text-white bg-red-500 rounded-full animate-pulse">
+                  {unreadNotifications.length}
+                </span>
+              )}
+            </button>
+
+            {/* Notification Dropdown */}
+            {showNotificationDropdown && (
+              <div
+                className="absolute right-0 mt-2 w-96 bg-white rounded-lg shadow-xl border border-gray-200 z-10"
+                style={{ maxHeight: "500px" }}
+                onScroll={handleScroll}
+              >
+                {/* Header */}
+                <div className="px-4 py-3 bg-blue-50 border-b border-gray-200">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-lg font-semibold text-blue-800">
+                      Notifications
+                    </h3>
+                    <div className="flex space-x-2">
+                      <button
+                        onClick={() => setActiveFilter("unread")}
+                        className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors duration-200 ${
+                          activeFilter === "unread"
+                            ? "bg-blue-600 text-white"
+                            : "bg-white text-gray-600 hover:bg-gray-100"
+                        }`}
+                      >
+                        Unread
+                      </button>
+                      <button
+                        onClick={() => setActiveFilter("read")}
+                        className={`px-3 py-1.5 rounded-full text-sm font-medium transition-colors duration-200 ${
+                          activeFilter === "read"
+                            ? "bg-blue-600 text-white"
+                            : "bg-white text-gray-600 hover:bg-gray-100"
+                        }`}
+                      >
+                        Read
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Notification Content */}
+                <div className="overflow-y-auto" style={{ maxHeight: "400px" }}>
+                  {!isFetching ? (
+                    <div className="p-4 space-y-3">
+                      {activeFilter === "unread" ? (
+                        unreadNotifications.length > 0 ? (
+                          unreadNotifications.map((notification) => (
+                            <div
+                              key={notification._id}
+                              onClick={() =>
+                                handleNotificationClick(notification)
+                              }
+                              className="flex items-start space-x-3 p-3 rounded-lg bg-blue-50 hover:bg-blue-100 transition-colors duration-200 cursor-pointer"
+                            >
+                              <div className="flex-shrink-0 mt-1">
+                                <Clock className="w-5 h-5 text-blue-600" />
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <p className="text-sm font-medium text-gray-900">
+                                  {notification.message}
+                                </p>
+                                <p className="text-xs text-gray-500 mt-1">
+                                  Just now
+                                </p>
+                              </div>
+                            </div>
+                          ))
+                        ) : (
+                          <div className="py-8 text-center">
+                            <BellOff className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+                            <p className="text-gray-500 font-medium">
+                              All caught up!
+                            </p>
+                            <p className="text-gray-400 text-sm">
+                              You have no unread notifications
+                            </p>
+                          </div>
+                        )
+                      ) : readNotifications.length > 0 ? (
+                        readNotifications.map((notification) => (
+                          <div
+                            key={notification._id}
+                            onClick={() =>
+                              handleNotificationClick(notification)
+                            }
+                            className="flex items-start space-x-3 p-3 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors duration-200 cursor-pointer"
+                          >
+                            <div className="flex-shrink-0 mt-1">
+                              <CheckCircle2 className="w-5 h-5 text-gray-400" />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <p className="text-sm text-gray-600">
+                                {notification.message}
+                              </p>
+                              <p className="text-xs text-gray-400 mt-1">
+                                Earlier
+                              </p>
+                            </div>
+                          </div>
+                        ))
+                      ) : (
+                        <div className="py-8 text-center">
+                          <BellOff className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+                          <p className="text-gray-500 font-medium">
+                            No notifications yet
+                          </p>
+                          <p className="text-gray-400 text-sm">
+                            Previous notifications will appear here
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  ) : (
+                    <div className="py-4 text-center">
+                      <div className="w-8 h-8 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin mx-auto mb-2"></div>
+                      <p className="text-gray-500 text-sm">
+                        Loading notifications...
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
 
+          {/* Profile Icon */}
           <div className="w-9 h-9 rounded-full bg-blue-50 flex items-center justify-center cursor-pointer">
             <Icon className="text-blue-900 text-3xl" icon="bx:user" />
           </div>
-          <div className=" md:hidden">
-            {Open ? ( // Render the hamburger icon button when the menu is closed
+
+          {/* Hamburger Menu */}
+          <div className="md:hidden">
+            {Open ? (
               <button className="text-white p-4" onClick={handleMenu}>
                 <svg
                   className="h-6 w-6"
@@ -191,32 +333,25 @@ function Navbar() {
         </div>
 
         {/* Profile Dropdown */}
-        {/* <ProfileDropdown profileMenu={profileMenu} /> */}
-
-        {Open ? (
-          <>
-            {/* <div className="md:hidden fixed inset-0 bg-gray-900 bg-opacity-30 backdrop-blur-sm z-20"></div> */}
-            <div className="md:hidden absolute left-0 w-full shadow-lg mt-16 z-30 bg-blue-900 backdrop-filter backdrop-blur-lg">
-              <div className="px-2 hover:bg-blue-900 hover:text-white text-black gap-1">
-                {navLinks.map((link, index) => (
-                  <Link
-                    key={index}
-                    to={link.path}
-                    onClick={() => {
-                      setOpen(false); // Close the menu when a link is clicked
-                    }}
-                    className="py-2 px-4 hover:bg-blue-800 text-white text-base block"
-                  >
-                    <div className="flex  items-center">
-                      {link.icon}
-                      <span className="ml-2 font-santoshi">{link.title}</span>
-                    </div>
-                  </Link>
-                ))}
-              </div>
+        {Open && (
+          <div className="md:hidden absolute left-0 w-full shadow-lg mt-16 z-30 bg-blue-900 backdrop-filter backdrop-blur-lg">
+            <div className="px-2 text-black gap-1">
+              {navLinks.map((link, index) => (
+                <Link
+                  key={index}
+                  to={link.path}
+                  onClick={() => setOpen(false)}
+                  className="py-2 px-4 hover:bg-blue-800 text-white text-base block"
+                >
+                  <div className="flex items-center">
+                    {link.icon}
+                    <span className="ml-2 font-santoshi">{link.title}</span>
+                  </div>
+                </Link>
+              ))}
             </div>
-          </>
-        ) : null}
+          </div>
+        )}
       </nav>
     </>
   );
@@ -224,11 +359,14 @@ function Navbar() {
 
 export default Navbar;
 
-const ProfileDropdown = ({ profileMenu, submitLogout }) => {
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-
+const ProfileDropdown = ({
+  profileMenu,
+  submitLogout,
+  isDropdownOpen,
+  setIsDropdownOpen,
+}) => {
   const handleDropdownToggle = () => {
-    setIsDropdownOpen((prev) => !prev);
+    setIsDropdownOpen((prev) => !prev); // Toggle dropdown visibility
   };
 
   return (
@@ -245,16 +383,20 @@ const ProfileDropdown = ({ profileMenu, submitLogout }) => {
           icon={profileMenu.icon}
         />
       </button>
-      {isDropdownOpen && (
-        <div className="absolute right-0 mt-3 w-36 h-32 text-center bg-white  rounded-lg shadow-lg overflow-hidden">
-          <ul className="bg-transparent">
-            <li className="px-4 border-b border-blue-900 bg-transparent hover:bg-blue-50 py-5">
-              Profile
-            </li>
-
+      {isDropdownOpen && ( // Show dropdown only when it's open
+        <div className="absolute right-4 top-16 w-48 py-5 text-center border-2 bg-white rounded-md shadow-lg overflow-hidden">
+          <ul>
+            <Link to="/profile" onClick={handleDropdownToggle}>
+              <li className="px-4 border-b text-black border-blue-900 hover:text-white hover:border-white hover:bg-blue-900 py-2">
+                Profile
+              </li>
+            </Link>
             <li
-              className="px-4 py-2 hover:bg-blue-50 bg-transparent"
-              // onClick={submitLogout}
+              className="px-4 py-2 text-black text-center items-center hover:text-white hover:bg-blue-900 cursor-pointer"
+              onClick={() => {
+                submitLogout();
+                handleDropdownToggle(); // Close the dropdown after logout
+              }}
             >
               Logout
             </li>

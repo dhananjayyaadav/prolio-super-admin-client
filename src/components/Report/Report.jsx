@@ -33,7 +33,6 @@ const ProductReportsAdmin = () => {
   const observer = useRef();
   const navigate = useNavigate();
 
-
   // Create a ref for the last report element
   const lastReportElementRef = useCallback(
     (node) => {
@@ -264,52 +263,6 @@ const ProductReportsAdmin = () => {
     }
   };
 
-  // Component function for handling block product
-  //   const handleBlockProduct = async (onProductBlocked) => {
-  //     setIsLoading(true);
-  //     setError(null);
-
-  //     try {
-  //       const productId = selectedReport?.productId?._id || selectedReport?.productId;
-
-  //       if (!productId) {
-  //         throw new Error("Product ID not found");
-  //       }
-
-  //       const result = await updateProductStatus({
-  //         params: { id: productId },
-  //         body: { status: "block" },
-  //       });
-
-  //       if (result.status === 200) {
-  //         // Remove all reports for this product from the current state
-  //         setReports(prevReports =>
-  //           prevReports.filter(report =>
-  //             (report.productId?._id || report.productId) !== productId
-  //           )
-  //         );
-
-  //         // Close modal and clear selection
-  //         setIsDetailModalOpen(false);
-  //         setSelectedReport(null);
-
-  //         // Callback for any additional UI updates
-  //         if (onProductBlocked) {
-  //           onProductBlocked(productId);
-  //         }
-
-  //         // Optionally refresh the first page to ensure consistent data
-  //         setPage(1);
-  //         fetchReports(1, true);
-  //       }
-  //     } catch (error) {
-  //       setError(error.message || "Failed to block product. Please try again.");
-  //       console.error("Block product error:", error);
-  //     } finally {
-  //       setIsLoading(false);
-  //     }
-  //   };
-
   const handleBlockProduct = async (onProductBlocked) => {
     setIsLoading(true);
     setError(null);
@@ -357,21 +310,13 @@ const ProductReportsAdmin = () => {
                 (report.productId?._id || report.productId) !== productId
             )
           );
-
-          // Close modal and clear selection
           setIsDetailModalOpen(false);
           setSelectedReport(null);
-
-          // Callback for any additional UI updates
           if (onProductBlocked) {
             onProductBlocked(productId);
           }
-
-          // Optionally refresh the first page to ensure consistent data
           setPage(1);
           fetchReports(1, true);
-
-          // Show success notification
           Swal.fire(
             "Blocked!",
             "The product has been successfully blocked.",
@@ -400,8 +345,7 @@ const ProductReportsAdmin = () => {
     const productId = report?.productId?._id || report?.productId;
     navigate(`/admin/product/${productId}`);
   };
-  
-  
+
   const ReportDetailModal = ({ report, onClose, onProductBlocked }) => (
     <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
       <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto">
@@ -575,23 +519,6 @@ const ProductReportsAdmin = () => {
             )}
           </div>
 
-          {/* Admin Actions */}
-          {/* <div className="border-t mt-6 pt-2">
-            <h4 className="font-medium mb-4">Actions</h4>
-            {error && (
-              <div className="mb-4 text-red-500 text-center">{error}</div>
-            )}
-            <div className="flex justify-center">
-              <button
-                className="px-6 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors disabled:bg-red-300 disabled:cursor-not-allowed"
-                onClick={() => handleBlockProduct(onProductBlocked)}
-                disabled={isLoading}
-              >
-                {isLoading ? "Blocking..." : "Block Product"}
-              </button>
-            </div>
-          </div> */}
-
           <div className="flex justify-center mt-4">
             <a
               href={`/admin/product/${
@@ -619,7 +546,6 @@ const ProductReportsAdmin = () => {
           <p className="text-gray-500">Manage and review product reports</p>
         </div>
       </div>
-
       {/* Filters */}
       <div className="mb-6 flex gap-4">
         <div className="flex-1 relative">
@@ -756,7 +682,6 @@ const ProductReportsAdmin = () => {
             setSelectedReport(null);
           }}
           onProductBlocked={(productId) => {
-            // Handle successful product block
             // You might want to refresh the reports list or update the UI
             setReports(
               reports.filter(

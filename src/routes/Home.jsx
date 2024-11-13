@@ -76,10 +76,10 @@ function Home() {
                   path="/admin/edit-categories/:id"
                   element={<EditCategory />}
                 />
-                <Route
+                {/* <Route
                   path="/admin/product-tips"
                   element={<BuyingTipsPage />}
-                />
+                /> */}
                 <Route path="/admin/product" element={<Product />} />
                 <Route
                   path="/admin/product/:id"

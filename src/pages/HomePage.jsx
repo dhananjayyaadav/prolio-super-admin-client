@@ -43,10 +43,10 @@ function HomePage() {
               path="/admin/edit-categorirs/:id"
               element={<EditCategory />}
             ></Route>
-            <Route
+            {/* <Route
               path="/admin/product-tips"
               element={<BuyingTipsPage />}
-            ></Route>
+            ></Route> */}
             <Route path="/admin/product" element={<Product />}></Route>
             <Route path="/admin/banner" element={<BannerManagement />}></Route>
             <Route path="/admin/logs" element={<LogPage />}></Route>
