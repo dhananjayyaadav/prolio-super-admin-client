@@ -4,7 +4,6 @@ import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 
-// Custom icon for markers
 const customIcon = L.icon({
   iconUrl:
     "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png",
@@ -16,7 +15,6 @@ const customIcon = L.icon({
   shadowAnchor: [12, 41],
 });
 
-// India bounds and center for map
 const INDIA_BOUNDS = [
   [6.4626999, 68.1097],
   [35.513327, 97.39535889],
@@ -37,7 +35,6 @@ const UserGeolocationMap = () => {
   const apiURL = process.env.REACT_APP_API_URL;
   const token = localStorage.getItem("token");
 
-  // Fetch visitor data
   const fetchVisitorData = useCallback(async () => {
     try {
       const response = await axios.get(`${apiURL}/visitor/getVisitor-company`, {
@@ -63,74 +60,49 @@ const UserGeolocationMap = () => {
     fetchVisitorData();
   }, [fetchVisitorData]);
 
-  // Memoize markers to prevent unnecessary recalculations
   const markers = useMemo(() => {
-    const allMarkers = [];
-
-    visitorData.forEach(({ _id: state, cities, coordinates }) => {
-      // If the state has coordinates, use it for the state marker
-      const stateCoordinates = coordinates || INDIA_CENTER;
-
-      allMarkers.push(
-        <Marker
-          key={`${state}-state`}
-          position={stateCoordinates}
-          icon={customIcon}
-        >
+    return visitorData.map(({ _id, location }) => {
+      const position = [
+        location.coordinates.latitude,
+        location.coordinates.longitude,
+      ];
+      return (
+        <Marker key={_id} position={position} icon={customIcon}>
           <Popup>
             <div className="p-2 min-w-[200px]">
-              <h3 className="font-semibold text-blue-800 mb-2">{state}</h3>
+              <h3 className="font-semibold text-blue-800 mb-2">
+                {location.state}
+              </h3>
+              <div className="space-y-1 text-sm">
+                <p>
+                  <span className="font-medium">City:</span> {location.city}
+                </p>
+              </div>
             </div>
           </Popup>
         </Marker>
       );
-
-      cities.forEach(
-        ({ city, companyCount, coordinates: cityCoordinates, _id: cityId }) => {
-          const finalCoordinates = cityCoordinates || INDIA_CENTER;
-
-          allMarkers.push(
-            <Marker
-              key={`${state}-${city}-${cityId}`}
-              position={finalCoordinates}
-              icon={customIcon}
-            >
-              <Popup>
-                <div className="p-2 min-w-[200px]">
-                  <h3 className="font-semibold text-blue-800 mb-2">{state}</h3>
-                  <div className="space-y-1 text-sm">
-                    <p>
-                      <span className="font-medium">City:</span> {city}
-                    </p>
-                    <p>
-                      <span className="font-medium">Companies:</span>{" "}
-                      {companyCount}
-                    </p>
-                  </div>
-                </div>
-              </Popup>
-            </Marker>
-          );
-        }
-      );
     });
-
-    return allMarkers;
   }, [visitorData]);
 
   const stats = useMemo(() => {
-    return visitorData.reduce(
-      (acc, state) => {
-        return {
-          totalStates: acc.totalStates + 1,
-          totalCompanies:
-            acc.totalCompanies +
-            state.cities.reduce((sum, city) => sum + city.companyCount, 0),
-          totalCities: acc.totalCities + state.cities.length,
-        };
-      },
-      { totalStates: 0, totalCompanies: 0, totalCities: 0 }
-    );
+    const uniqueStates = new Set();
+    const uniqueCities = new Set();
+    let totalVisits = 0;
+
+    visitorData.forEach((visitor) => {
+      if (visitor.location) {
+        uniqueStates.add(visitor.location.state);
+        uniqueCities.add(`${visitor.location.state}-${visitor.location.city}`);
+        totalVisits += 1;
+      }
+    });
+
+    return {
+      totalStates: uniqueStates.size,
+      totalCities: uniqueCities.size,
+      totalVisits,
+    };
   }, [visitorData]);
 
   if (error) {
@@ -146,10 +118,9 @@ const UserGeolocationMap = () => {
     <div className="bg-white rounded-lg shadow-lg overflow-hidden">
       <div className="p-4 border-b">
         <h1 className="text-xl font-bold text-gray-800">
-          India Visitor Locations
+          Company Visitor Locations
         </h1>
 
-        {/* Stats Summary */}
         <div className="grid grid-cols-3 gap-4 mt-3 mb-4">
           <div className="bg-blue-100 p-3 rounded-lg">
             <p className="text-sm text-blue-600">Total States</p>
@@ -163,10 +134,10 @@ const UserGeolocationMap = () => {
               {stats.totalCities}
             </p>
           </div>
-          <div className="bg-purple-200 p-3 rounded-lg">
-            <p className="text-sm text-purple-600">Total Companies</p>
+          <div className="bg-purple-100 p-3 rounded-lg">
+            <p className="text-sm text-purple-600">Total Visits</p>
             <p className="text-xl font-bold text-purple-800">
-              {stats.totalCompanies}
+              {stats.totalVisits}
             </p>
           </div>
         </div>

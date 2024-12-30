@@ -1,19 +1,14 @@
-// tailwind.config.js
 module.exports = {
-  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
+  content: [
+    "./src/**/*.{js,jsx,ts,tsx}", // for React projects
+    "./pages/**/*.{js,jsx,ts,tsx}",
+    "./components/**/*.{js,jsx,ts,tsx}",
+  ],
   theme: {
     extend: {
-      boxShadow: {
-        "3xl": "0 2px 2px 2px rgba(0, 0, 0, 0.3)",
-      },
-      transitionDuration: {
-        500: "500ms",
-      },
-      scale: {
-        120: "1.2",
-      },
       fontFamily: {
-        poppins: ["Poppins", "sans-serif"], // Define Poppins font here
+        poppins: ["Poppins", "sans-serif"],
+        inter: ["Inter", "sans-serif"],
       },
     },
   },

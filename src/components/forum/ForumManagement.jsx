@@ -30,18 +30,15 @@ const ForumManagement = () => {
             forum.companyName?.toLowerCase().includes(searchTerm.toLowerCase())
         )
       : [];
-
     setFilteredForums(filtered);
     setCurrentPage(1);
   }, [searchTerm, forums]);
-
   const fetchForums = async () => {
     setIsLoading(true);
     try {
       const response = await axios.get(`${BASE_URL}/forum/getAll-forums`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-
       if (Array.isArray(response.data.forums)) {
         setForums(response.data.forums);
         setFilteredForums(response.data.forums);
@@ -61,10 +58,8 @@ const ForumManagement = () => {
   };
 
   const toggleForumStatus = async (forumId, currentStatus) => {
-    const statusMessage = !currentStatus ? "activate" : "deactivate"; // Toggle message
-
+    const statusMessage = !currentStatus ? "activate" : "deactivate";
     try {
-      // Show confirmation dialog with custom button colors
       const result = await Swal.fire({
         title: `Are you sure you want to ${statusMessage} this forum?`,
         text: `This will ${statusMessage} the forum and change its visibility.`,
@@ -73,12 +68,10 @@ const ForumManagement = () => {
         confirmButtonText: `Yes, ${statusMessage} it!`,
         cancelButtonText: "Cancel",
         reverseButtons: true,
-        confirmButtonColor: "#3085d6", // Blue confirm button
-        cancelButtonColor: "#d33", // Red cancel button
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
       });
-
       if (result.isConfirmed) {
-        // Proceed with toggling the forum status if confirmed
         await axios.patch(
           `${BASE_URL}/forum/toggle-active/${forumId}`,
           { forumId, status: !currentStatus },
@@ -86,8 +79,6 @@ const ForumManagement = () => {
             headers: { Authorization: `Bearer ${token}` },
           }
         );
-
-        // Update local state
         setForums(
           forums.map((forum) =>
             forum._id === forumId
@@ -95,20 +86,18 @@ const ForumManagement = () => {
               : forum
           )
         );
-
         Swal.fire({
           title: "Success!",
           text: `Forum ${statusMessage}d successfully.`,
           icon: "success",
-          confirmButtonColor: "#3085d6", // Blue confirm button
+          confirmButtonColor: "#3085d6",
         });
       } else {
-        // If the user cancels the action
         Swal.fire({
           title: "Cancelled",
           text: "The forum status was not changed.",
           icon: "info",
-          confirmButtonColor: "#3085d6", // Blue confirm button
+          confirmButtonColor: "#3085d6",
         });
       }
     } catch (error) {
@@ -117,7 +106,7 @@ const ForumManagement = () => {
         title: "Error!",
         text: "Failed to update forum status.",
         icon: "error",
-        confirmButtonColor: "#3085d6", // Blue confirm button
+        confirmButtonColor: "#3085d6",
       });
     }
   };
@@ -130,13 +119,10 @@ const ForumManagement = () => {
     if (description.length <= maxLength) return description;
     return `${description.substring(0, maxLength)}...`;
   };
-
-  // Pagination logic
   const totalPages = Math.ceil(filteredForums.length / ITEMS_PER_PAGE);
   const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
   const endIndex = startIndex + ITEMS_PER_PAGE;
   const currentForums = filteredForums.slice(startIndex, endIndex);
-
   const renderPagination = () => {
     return (
       <nav
